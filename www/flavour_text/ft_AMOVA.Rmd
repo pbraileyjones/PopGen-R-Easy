@@ -1,0 +1,10 @@
+---
+title: An R Markdown document converted from "AMOVA_abstract_shinyipynb.ipynb"
+output: html_document
+---
+
+AMOVA stands for **A**nalysis of **Mo**lecular **Va**riance. It is used to detect population differentiation when using molecular markers (Excoffier *et al* 1992, Michalakis & Excoffier, 1996).
+
+A comprehensive description of the history of the AMOVA framework and associated calculations is available in the article by Meirmans & Liu (2018), which is reccomended reading prior to performing this analysis.
+
+**This app does not add statistical values to the AMOVA results.** This is done via bootstrapping the calculated AMOVA result, which is incredibly computationally expensive and for many datasets can take over an hour if not longer. If you wish to add p-values, you can use the downloaded .csv file from this page and follow the instructions of https://grunwaldlab.github.io/Population_Genetics_in_R/AMOVA.html .
