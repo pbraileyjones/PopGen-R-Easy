@@ -1,0 +1,8 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+Several information criteria can be used to assess the optimum number of clusters to use when performing snapclust analysis. The information criteria measure the deviance of a calculated snapclust model, giving differing penalties for dataset complexity.
+
+When using AIC and BIC statistics to find the optimum *k*, the snapclust model is iterated over *k=1-20*, and the chosen statistics are calculated for each resulting model. These are compared in the plot generated. Generally lower values of each statistic indicate a better model fit, but in practice a sharp decrease in the statistics value with increasing *k* is most likely to reveal the optimum number of clusters. Therefore pay attention to the graphs and don't let your prior population hypotheses influence your choice of clusters to use in the model!

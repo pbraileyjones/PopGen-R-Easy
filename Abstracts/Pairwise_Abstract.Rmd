@@ -1,0 +1,12 @@
+---
+title: Pairwise Population Comparisons
+output: html_document
+---
+
+To calculate a pairwise matrix of values, the dataset is split into unique pairs of populations. e.g. a study contains Pop1, Pop2 and Pop3 andfor pairwise comparisons the dataset is split
+in to Pop1-Pop2, Pop1-Pop3, and Pop2-Pop-3. 
+
+Statistical significance between the value for each pair
+can then tested through permutation calculations of the value to assess the likelihood that it deviates
+from zero using Markov-Chain Monte-Carlo testing. Pairwise values can also be used to construct
+phylogenetic trees as they represent evolutionary distances between samples.

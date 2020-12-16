@@ -1,0 +1,10 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+Principal Component Analysis (PCA) aims to reduce the dimensionality of large, interrelated multivariate data, while retaining as much of the datasets original variation as possible. The data is transformed in to a new set of variables known as Principle Coordinates (PCs), which are entirely uncorrelated from one another, and are in the order of how much of the original variation they contain.
+
+This is generally an exploratory and visual analysis, wherein linear relationships between variables and experimental treatment groups (or other factors) can be visualised. The derived PCs can however be used in further analyses such as multiple regression or Mantel tests with other values/ matrices of phenotypes attatched to each genotype, as they represent aggregate values. The contribution of each variable to the plot (loading value) can also be assessed for each PC for the sake of determining which variables make up each aggregate value for further interpretation.
+
+Through the visualisation of the data in the context of population genetics, PCA and other ordinations provide an accessible form of explaining statistical differences between populations / other heirarchies derived from AMOVA and pairwise comparisons.

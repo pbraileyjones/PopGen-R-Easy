@@ -1,0 +1,8 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+Also known as **m**etric **M**ulti**D**imensional **S**caling (mMDS), PCoA is conceptually similar to PCA. While PCA utilizes the raw data (in the case of SNP and microsatellite datasets being presence/absence values of alleles) PCoA instead utilizes pairwise dissimilarity matrices.
+
+Like PCA, the aim of PCoA is to reduce a large number of interrelated multivariate data in to uncorrelated axes that best preserve the original variation within the dataset.

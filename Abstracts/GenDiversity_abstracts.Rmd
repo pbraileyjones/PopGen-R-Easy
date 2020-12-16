@@ -1,0 +1,193 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+##**Number of alleles (Na and Np) and Allelic Richness (Ar and pAr)**
+
+####**Number of alleles**
+
+Na is the number of alleles found per locus within a population, calculated as the mean across all loci.
+
+$$Na = (\displaystyle \frac{1}{K}) \sum_{i=1}^{K}n_i = \displaystyle \frac{ \sum_{i=1}^{K}n_i}{K}$$
+
+*where $K$ is the number of loci, and $n_i$ is the number of alleles detected per locus.*
+
+Np is the number of private alleles found per population.
+
+$$N_p = \sum_{i=1}^{K} n_{ui}$$
+
+*Where $n_{ui}$ is the number of alleles found only in each population.*
+
+The number of alleles / allelic richness are representative of the amount of variation within a population. This is important in the context of long-term conservation as populations containing higher levels of genetic variability are expected to be more able to respond to selection pressures and maintain the health of individuals (Petit *et al*,1998). Allelic richness may also be useful indicators of past population bottlenecks or decreases in population size (Nei *et al.* 1975)
+
+Both the number of alleles and allelic richness are dependent on the choice of markers chosen to study the given population. SNP data can at maximum have an allelic richness of 2, as each SNP has only two alleles. For microsatellite data this is more complicated, as microsatellites can contain greater numbers of alleles.
+
+
+####**Allelic Richness (Ar and pAr)**
+
+Allelic richness (Ar) and private allelic richness (pAr) are special cases of Na and Np which are corrected for sample size differences between populations.
+
+The number of alleles and number of private alleles found in a studied population depend on sample size, as increased sampling increases the chance of finding new alleles. This makes comparing these two properties across populations with differing sample sizes difficult and inaccurate. This number can be corrected for the sample size of populations through the rarefaction. 
+
+Private Allelic richness is the number of private alleles which are expected in a population when random subsamples of size $g$ are taken from each of $J$ populations (Kalinowski, 2004)
+
+#####**Calculating Allelic Richness**
+
+Number of copies of allele type $i$ in population $j$:
+
+$$N_{j} = \sum_{i = 1}^{I} N_{ij}$$
+
+
+*where $N_{ij}$ is the sample size of population $j$ at the locus, $I$ is the number of alleles in the population*
+
+---
+
+The **probability** of finding **NO** copies of allele type $i$ in a sample size of $g$ alleles from population $j$:
+
+$$Q_{ijg} = \displaystyle \frac{\binom {N_{j} - N{ij}}{g}}{\binom {N{j}}{g}}$$
+
+*where $g$ is the number of alleles in population $j$*
+
+The **probability** of finding **at least one** allele$i$ in a sample of size $g$ alleles in population $j$:
+
+$$P_{ijg} = 1 - Q{ijg}$$
+
+---
+
+Estimated Allelic Richness of sample size $g$  from population $j$:
+
+$$Ar_{g}^{(j)} = \sum_{i = 1}^{I} P_{ijg}$$
+####**Calculating Private Allelic Richness**
+
+Private Allelic richness is the number of private alleles which are expected in a population when random subsamples of size $g$ are taken from each of $J$ populations (Kalinowski, 2004)
+
+$$pAr_{g}^{(j)} = \sum_{i=1}^{I} \left[  P_{ijg} \left( {\prod_{jI = 1}^{J}}_{jI \neq j} Q_{ij/g} \right)    \right]  $$
+
+*where $J$ is the total number off populations, $Q_{ij/g}$ is the probability of an allele not being present in each population ($j$) of sample size $g$*
+
+##**Proportion of polymorphic loci (P)**
+The proportion of polymorphic loci in a population is a measure of the informative content of the considered loci in distinguishing between individuals / populations. It is a measure of genetic diversity in that it shows the percentage of variable loci versus that which are 'fixed' within the population.
+
+The definition of this value shifts depending on a given studies cut-off of what a polymorphic loci is. Many studies utilize either a 0.5 or 0.1 minimum allele frequency cut-off to filter data, as those with lower values are considered 'uninformative'. 
+
+Therefore the number of polymorphic loci within a population can be defined as:
+
+$$P_{j} = q \le 0.95$$
+
+$$or$$
+
+$$P_{j} = q \le 0.99$$
+
+*where q is the major allele frequency*
+
+and the proportion of polymorphic loci is calculated as:
+
+$$P= n_{pj} / n_{total}$$
+
+*Where $n_{pj}$ is the number of polymorphic loci and $n_{total}$ is the total number of loci.*
+
+In the context of microsatellite development and analysis of individuals/populations using both SNPs and microsatellites, the polymorphic content of individual markers is important in determining whether or not to include them in subsequent analysis. Markers in which $P = 0$ (i.e. monomorphic markers) across **all** sampled individuals are entirely uninformative and should be removed from analysis. Alternatively markers which are polymorphic in one population and monomorphic in another are incredibly informative in distinguishing between the two.
+
+##**Latent Genetic Potential** 
+
+Latent Genetic Potential (LGP) was first defined by Bergmann *et al*. (1990) as a way to distinguish between the physiological and evolutionary adaptive potential of a population. They describe the 'operating genetic potential' as being the section of genetic composition which guarantees the survival of the population under currently realised conditions, being akin to the effective number of alleles (Ae / v). The remaining genetic composition in this context is currently 'latent'. This portion of genetic diversity is related to low frequency alleles in the population, which can play a large role in adaptation and evolution under changing environmental conditions. This in turn could be of great importance to forest conservation practices (Aravanopoulos, 2016, Rajora & Mosseler, 2001).
+
+Latent genetic potential therefore represents the adaptive ability of a population, as it reflects the difference between the observed and expected number of alleles in a population across all (observed) loci. 
+
+LGP has been used to infer both the potential of populations to adapt to changing conditions, and the negative impacts on stressors on this. For example, thinning of standing populations through logging has been shown to reduce both LGP and vgam of populations (Wickneswari *et al.* (2004);Rajora *et al* (2000)), as has habitat fragmentation (O'Connell *et al* 2006). LGP has also been shown to be resistant to other stressors such as forest fires (Rajora & Pluhar, 2003).
+ 
+
+---
+
+$$LPG = (A - Ae)$$
+
+often reported as:
+
+$$\sum (A - Ae)$$
+      
+*where A=number of alleles     Ae= expected number of alleles for given heterozygosity*
+
+##**Hypothetical Gametic Multilocus Diversity ($v_{gam}$)
+
+Vgam is a special case of diversity which characterizes the potential diversity of a population's gametic output. This signifies the adaptive/ evolutionary potential of a sexually reproducing population, being the effective number of multilocus gametes that can be produced (Gregorius 1978). When calculating vgam it is assumed that the loci assessed are in linkage equilibrium, and that there is no fecundity selection in the population (i.e. individiduals do not have a fitness advantage through traits that increase the number of offspring) (Hattemer, 1991). It is therefore only a hypothetical estimation of this capacity.
+
+Genetic variation within a population is necessary for adaption and survival in heterogeneous environments (Muller-Starck, 1995). As a measure of the ability of a population to create genetic variation and facilitate adaption to changing environmental conditions (Gregorius et al., 1986), vgam can be indicative of a populations response to and ability to withstand long term environmental stress. This was shown in European beech (*Fagus sylvatica*), where more 'air pollution tolerant' sub-populations had 90 % higher vgam than more 'sensitive' sub-populations (Muller-Starck, 1989). vgam has also been used to demonstrate a potential reduction in a gene pools ability to adapt to changing conditions following anthropogenic disturbances such as logging (Wickneswari *et al.*, (2004). 
+
+---
+vgam is the product of all single locus diversitieis (Ae) across all loci 
+
+$v_{gam} = \prod_{k}^m v_{k}$
+
+*Where v is the effective number of alleles (Ae) for each locus (k) and m is the number of unlinked loci*
+
+##**Linkage Disequilibrium**
+
+Linkage disequilibrium (LD) is the non-random association of alleles at different loci in a given population (Weir, 1979)
+
+The simplest form of measuring linkage disequilibrium is through the calculation of the coefficient of disequilibrium between two loci:
+
+$$D_{AB}= p_{AB} - p_{A}p_{B}$$
+
+*where $p_{AB}$ is the frequency of individuals carrying a pair of alleles (A and B) at both considered loci, and $p_{A}$ and $p_{B}$ is the frequency of each allele within the locus that they come from.*
+
+When considering multiple loci, this measure can be summarized with a single measure called the index of association ($I_{A}$):
+
+$$ I_{A} = \displaystyle (\frac{V_{o}}{V_{e}}) - 1 $$
+
+*Where $V_{o}$ is the observed variance of pairwise distances between loci, and $V_{e}$ is the expected variance in the absence of linkage disequilibrium*
+
+Due to the manner in which $V_{o}$ and $V_{e}$ are determined, $I_{A}$ is sensitive to the observed number of loci, and will invariably increase as this does. Agapow & Burt (2005) improved this method to account for this and yield an unbiased statistic of association ($\overline{r}_{d}$).
+
+Standard Equation:
+
+$$V_{e} = \sum var_{j} $$
+
+$$and$$
+
+$$ V_{o} = \sum var_{j} + 2 \sum \sum cov_{j,k} $$
+
+$$therefore$$
+
+$$I_{A}= (\displaystyle \frac {\sum var_{j - 2 \sum \sum cov_{j,k}}}{\sum var_{j}}) - 1 = \displaystyle \frac {2 \sum \sum cov_{j,k}}{\sum var_{j}}  $$
+
+Non-biased Equation (Agapow and Burt, 2005):
+
+$$ \overline{r}_{d} = \displaystyle \frac {\sum \sum cov_{j,k}} {\sum \sum \sqrt{var_{j}.{var_{k}}} } $$
+
+*Where $var_{j}$ is the the variance of pairwise distances at locus j, and $cov_{j,k}$ is the covariance of distances summed across each pair of loci (j and k respectively).*
+
+Under linkage equilibrium (LE) alleles would be associated randomly. This is similar to how when assessing HWE, under null conditions alleles will be present in an expected frequency. 
+
+$\overline{r}_{d}$ can be calculated both overall for all loci within a population, and pairwise for each loci (globally and within each population to ensure that the pattern of LD is not due to a few loci. LD between loci can be affected by many driving forces of interest in population genetics including selection, gene flow, genetic drift and mutation, along with demographic properties such as population sub-structure, asexual reproduction, bottlenecks and inbreeding. While under completely null conditions loci would eventually become in LE, these processes allow it to persist in a population (detailed in a review by Slatkin, 2008).
+
+Global pairwise LD between loci can be used in the filtering of markers prior to the generation of other genetic statistics using a cutoff criteria of $\overline r_{d} >0.7$. 
+
+##**Hardy-Weinberg Equilibrium**
+
+The Hardy-Weinberg law is a fundamental principle in population genetics. The Hardy-Weinberg (1908) theory states that:
+
+> "In the absence of other genetic or evolutionary factors, allele frequencies are invariant between generations, and constant genotype frequencies are reached in one generation"
+
+If loci are in Hardy-Weinberg Equilibrium then alleles are found in the following proportions when the number of alleles = 2 (genotypes AA,AB,BB):
+
+$$p^{2} + 2pq + q^{2} = 1 $$
+
+*where $p$ and $q$ are allele frequencies for A and B respectively, $p^2$/$q^2$ are the proportion of individuals homozygous for alleles $p$ and $q$,and $2pq$ is the proportion of heterozygous individuals.this is equivalent to the Mendelian ratios of 1:2:1.*
+
+There are two widely used methods used to determine whether loci follow HWP. These include goodness-of-fit tests such as Pearson's $/chi^{2}$ (Li, 1955), and exact tests such as the Monte-Carlo permutation-based exact test put forwars by Guo and Thompson, 1992). Exact tests are considered as an alternative, as the $/chi^2$ test relies on asymptotic results that are not always valid.
+ 
+
+Exact tests (Levene,1949)
+
+Chi Squared ($\chi^2$) test:
+
+$$ \chi^2 = \sum \displaystyle \frac{(O-E)^{2}}{E} $$
+
+*Where $O$ is the observed frequency of a genotype (e.g. AA), and $E$ is the expected value for this based on HWE.
+
+
+Significant deviations from HWE are often due to genotyping errors, making HWE tests an efficient way of detecting this. A common approach to filtering genetic data prior to analysis through this test is to omit markers which show deviations from HWE in more than half of all samples at a suitably high p value after multiple-testing corrections (Wyngaarden *et al*, 2018).
+
+Disequilibrium can also arise from population substructure or inbreeding (Laird and Lange, 2011). The interpretation of many population genetics are closely tied to the HWE principle. For example, the effective number of alleles Ne is often lower than Na, as heterozygosity expected under HWE is also usually lower. This in turn informs F-statistics used in detecting inbreeding and population differentiation through AMOVA and pairwise comparisons.
+

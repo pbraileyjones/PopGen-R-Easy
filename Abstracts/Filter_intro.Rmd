@@ -1,0 +1,10 @@
+---
+title: Filtering data explanation
+output: html_document
+---
+
+If you choose to filter your data, it will initially have monomorphic loci removed as these are uninformative to analysis. You can subsequently define the level of missingness that you find acceptable in your dataset (e.g. 0.05 = 5% missing and above will be filtered), as well as the minor allele frequency (MAF) at which to filter (e.g. 0.01 will filter all loci with an MAF below 0.01). You can also choose whether or not you wish to filter by Linkage Disequilibrium (LD) and Hardy Weinberg Equilibrium (HWE). 
+
+When filtering by LD, global linkages (across all individuals regardless of population)) linkages are examined using the '*pair.ia*' function in the *poppr* package. Loci with a sample size-corrected correlation ($\overline r_d$) of above 0.7 are flagged as being in LD. One of each pair of loci will be removed from the sample and the other will be retained.
+
+When filtering by HWE, HWE is assessed for each loci per population using the '*hw.test*' function from the *pegas* package, with p values being determined using a classic chi-squared test. The resulting p-values are adjusted for multiple calculations using the Bonferroni method. Only loci found to be outside of HWE (*p < 0.01*) in >50 % of populations are subsequently removed from the dataset.

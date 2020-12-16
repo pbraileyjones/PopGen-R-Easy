@@ -1,0 +1,199 @@
+---
+title: "GeneticVariation_Multiplicity_Methods"
+output: html_document
+---
+
+#### **Overview of *easyRpopgen* methodology**
+
+latent genetic potential (LGP) and hypothetical gametic multilocus diversity (vgam) are calculated using functions written for the application, using *poppr* functionalities.
+
+Below is a simplified code displaying the logic behind the application calculations of each statistic and analysis conducted. You will find if you adapt this code for your own research much can be done simpler, though this set-up was used to ensure that data format was consistent and could be easily piped in to the summary table.
+
+#### **Population Size**
+
+```{r, eval = FALSE}
+  N<-summary(genind) #summarize genind object with adegenet functions
+  N<-as.data.frame((N$n.by.pop)) #Separate out N by pop as a dataframe
+  N$pop<-rownames(N) #create population column
+  colnames(N)<-c("N", "pop") #rename columns for neatness
+  N$minN<-min(N$N) #Find smallest population size
+  N #View population sizes
+```
+
+#### **Number of Alleles (A)**
+
+```{r, eval = FALSE}
+#Function to determine number of alleles for a population
+Na=function (x, population)
+{
+  sub=poppr::popsub(x, population, drop=TRUE) #subset population
+  sum=summary(sub) #summarize genind object with adegenet functions
+  sum$loc.n.all #extract number of alleles per loci across individuals from summary
+}
+
+Nallele=NULL; #Create empty object to put outputs in
+  for (i in unique(genind$pop)) #Loop to calculate A for each locus per population
+  {
+    tmp=Na(genind, population=i) #Carry out Na function
+    Nallele=rbind(Nallele,tmp) #Merge results per population in Nallele
+  }
+  Nallele=round(as.data.frame(rowMeans(Nallele)),3) #Round A to 3 dp
+  rownames(Nallele)=unique(genind$pop) #rename rows for population
+  names(Nallele)="A" #rename column value name to reflect metric
+  Nallele$pop=rownames(Nallele) #Add population column
+  Nallele #View A per column
+```
+
+#### **Polymorphic Loci (%P)**
+
+```{r, eval = FALSE}
+  mon<-NULL;
+  pol<-NULL;
+  per<-NULL; #Create empty object to put outputs in
+  for (i in unique(genind$pop)) { #loop to calculate monomorphic loci, polymorphic loci and percentage of polymorphic loci per loci for each pop
+    temp<-poppr::popsub(genind, sublist =i, drop= TRUE) #subset population i
+    temp<-summary(temp) #summarize genind object
+    loc<-temp$loc.n.all #Extract locus allele data
+    total<-length(temp$loc.n.all) #find total number of loci
+    
+    monomorphs<-as.matrix((table(loc) [names(table(loc)) == 1]))
+    if(is.na(monomorphs[1]) == TRUE) {
+      monomorphs = 0
+    } #Find monomorphic loci
+    polymorphs<-as.matrix(total - monomorphs) #calculate polymorphic loci
+    P<-as.matrix((polymorphs/total) *100) #Calculate percentage of polymorphic loci
+    mon<-rbind(mon, monomorphs) #Merge results per population
+    pol<-rbind(pol, polymorphs) #Merge results per population
+    per<-rbind(per, P) #Merge results per population
+  }
+  
+  pop<-as.data.frame(unique(genind$pop))#Create df from pops
+  FinalP<-cbind(pop, total,mon, pol, per) #Merge locus summary data with pops
+  colnames(FinalP)<-c("pop", "total loci", "monomorphic loci", "polymorphic loci", "%P") #rename columns for neatness
+  rownames(FinalP)<-FinalP$pop #change rownames for niceness
+  FinalP$`%P`<-round(FinalP$`%P`,0) #round percentages to zero dp
+  FinalP
+```
+
+#### **Allelic Richness (Ar) and Private Allelic Richness (pAr)**
+
+The functions used to calculate allelic and private allelic richness come not from a published R package, but from those used by [Dupuis *et al* (2018)](https://link.springer.com/article/10.1007/s10592-018-1081-8) based on the approach of [Kalinowski (2004)](https://link.springer.com/article/10.1023/B:COGE.0000041021.91777.1a). The latter paper and approach also forms the basis of the non-R based program *HP-Rare* developed by the author [(Kalinowski, 2005)](https://doi.org/10.1111/j.1471-8286.2004.00845.x). The necessary function scripts to carry out the below analysis can be found in the "App" code for this application, and at the [GitHub directory](https://github.com/muirheadk/GBS_analysis_pipeline ) associated with the paper. If you use any measures of rarefied allelic richness make sure that you cite Dupuis *et al* (2018) in the same manner that you would cite a package or program.
+
+```{r, eval = FALSE}
+# Extract the data to use
+  data.list = list()
+  data.list$tab <- genind@tab
+  data.list$loc.fac <- factor(genind@loc.fac)
+  data.list$pop <- factor(genind@pop)
+  
+  # Run rarefaction analyses, using smallest population as minimal cutoff
+  min.size <- min(table(data.list$pop))
+  rarefied.values <- rarefiedMatrices(data = data.list, 
+                                      g = min.size, 
+                                      display.progress = TRUE)
+  rarefied.values
+
+#################################
+########Allelic Richness#########
+#################################
+  
+  richness.matrix<-rarefied.values$richness #subset Ar values
+  richness.matrix<-as.data.frame(richness.matrix) #Convert object to df
+  
+  richness.matrix=tidyr::gather(richness.matrix, pop, Ar, na.rm = TRUE, convert = FALSE) #Rearrange data
+  
+  finalAr<-richness.matrix %>% dplyr::group_by(pop) %>% #Summarize richness values per population
+    dplyr::summarize(
+      N = length(Ar) - sum(is.na(Ar)),
+      mean = mean(Ar, na.rm = TRUE),
+      sd   = sd(Ar, na.rm =TRUE),
+      se   = sd / sqrt(N),
+    )
+  
+  finalAr$mean<-round(finalAr$mean, 3)
+  finalAr$sd<-round(finalAr$sd, 3)
+  finalAr$se<-round(finalAr$se, 3)
+  names(finalAr)=c("pop","Nmin", "Ar","SD","SE")
+  finalAr
+  
+#################################
+####Private Allelic Richness#####
+#################################
+  
+  richness.matrix<-rarefied.values$private #subset pAr values
+  richness.matrix<-as.data.frame(richness.matrix) #Convert object to df
+  
+  richness.matrix=tidyr::gather(richness.matrix, pop, pAr, na.rm = TRUE, convert = FALSE) #Rearrange data
+  
+  finalpAr<-richness.matrix %>% dplyr::group_by(pop) %>% #Summarize richness values per population
+    dplyr::summarize(
+      N = length(pAr) - sum(is.na(pAr)),
+      mean = mean(pAr, na.rm = TRUE),
+      sd   = sd(pAr, na.rm =TRUE),
+      se   = sd / sqrt(N),
+    )
+  
+  finalpAr$mean<-round(finalpAr$mean, 3)
+  finalpAr$sd<-round(finalpAr$sd, 3)
+  finalpAr$se<-round(finalpAr$se, 3)
+  names(finalpAr)=c("pop","Nmin", "pAr","SD","SE")
+  finalpAr
+```
+
+#### **Latent Genetic Potential (LGP)**
+
+LGP is measured as the sum of the number of alleles minus the effective number of alleles ($LGP = \sum_i^I Ai - Ae_i$ where i is a given locus and I is all loci considered). Due to this it is therefore important to consider that it is a value which is incredibly sensitive to the number of loci considered and not necessarily comparable between studies because of this.
+
+```{r, eval = FALSE}
+#LGP calculation function
+LGPcalc=function (x, population = "ALL")
+{
+  z = poppr::popsub(x, population, drop = TRUE) #seperates genind by population
+  sum=summary(z)  #generates summary table of genind object including measures of 'number of alleles' and 'expected heterozygosity' which are needed to calculate LGP
+  q=(1/(1-sum$Hexp))  #Calculate number of effective alleles
+  LGP=(sum(sum$loc.n.all-q)) #calculate LGP
+}
+
+#Calculation
+LGP=NULL; #Create empty object to put outputs in
+  for (i in unique(genind$pop)) #Loop to calculate LGP across populations
+  {
+    temp<-LGPcalc(genind, population = i) #Carry out LGP calculation for pop i
+    LGP=rbind(LGP,temp) #Merge LGP results from all pops
+  }
+  LGP<-as.data.frame(LGP) #Convert object to df
+  rownames(LGP)=unique(genind$pop) #Add pops from genind as rownames
+  names(LGP)="LGP" #rename value for neatness
+  LGP$pop=rownames(LGP) #Create pop column
+  LGP #View LGP values per population
+```
+
+#### **Hypothetical Gametic Multilocus Diversity (vgam)**
+
+vgam is the product of the expected number of alleles across loci within a population. Like LGP the value is therefore incredibly sensitive to the number of loci considered, and can therefore appear unweildingly large when considering large SNP datasets. Consider this when interpreting the results, and note that due to this it is also not necessarily comparable between studies.
+
+```{r, eval = FALSE}
+#vgam calculation function
+#vgam
+Vgamcalc=function (x, population = "ALL") #Function to calculate vgam from a genind object
+{
+  z=poppr::popsub(x, sublist = population, drop = TRUE) #subset genind by population
+  sum=summary(z) #generate summary statistics including expected heterozygosity
+  q=as.matrix(1/(1-sum$Hexp)) #calculate effective number of alleles from expected heterozygosity
+  vgam=colProds(q,method = c("direct")) #calculate hypothetical gametic multi-locus diversity as product of all Aes across all loci
+  vgam
+}
+
+#Calculation
+vgam=NULL; #Create empty object to put outputs in
+for (i in unique(genind$pop)) #loop to calculate vgam per population
+{
+  temp<-Vgamcalc(genind, population = i) #calculate vgam for population i
+  vgam=rbind(vgam,temp) #merge values of all populations together
+}
+vgam<-as.data.frame(vgam) #convert object to df
+rownames(vgam)=unique(genind$pop) #rename rows for populations from genind object
+names(vgam)="vgam" #rename value column for neatness
+vgam$pop=rownames(vgam) #create pop column
+vgam #view vgam per population
+```

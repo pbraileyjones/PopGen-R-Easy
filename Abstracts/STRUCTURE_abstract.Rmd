@@ -1,0 +1,23 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+
+STRUCTURE is a program for population analysis developed by (Pritchard, Stephens, and Donnelly
+2000) . It utilizes a model-based clustering method to infer population structure using genotype data
+consisting of unlinked markers.
+
+STRUCTURE assumes a model wherein there are K populations, each of which is characterized by a
+set of allele frequencies at each locus. Individuals are assigned probabilistically to populations or
+jointly to two or more populations. STRUCTURE assumes Hardy-
+Weinberg and linkage equilibrium with clusters, which is why it is important to filter by both of these
+ metrics prior to carrying out the analysis (this is your hint to go back and filter your data if you haven't). It estimates allele frequencies in each cluster ($K$), and population memberships for each individual. Markov chain Monte Carlo (MCMC) permutations are used to integrate over the paramete
+r space and make cluster assignments. The optimum value of K to run STRUCTURE for is determined
+post-hoc through the Evanno-Structure method.
+
+STRUCTURE is not itself intended as the endpoint of population analyses, though it is for many
+studies. STRUCTURE provides evidence for population structures that were not considered within
+the original experimental design (and researcher-assigned population hypotheses). These new
+assignments can then be used to re-calculate intra-population diversity metrics based on new
+assignments.

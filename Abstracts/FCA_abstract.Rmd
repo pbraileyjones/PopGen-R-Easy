@@ -1,0 +1,16 @@
+---
+title: "Untitled"
+output: html_document
+---
+
+Factorial correspondence analysis is an extension of PCA, which can be used to explore relationships
+among qualitative (or categorical) data. This is not however necessarily how it is implemented in
+population genetics. The principles of FCA are:
+- Genetic data are transformed into a contingency table (samples x alleles) where each sample
+is described by allelic frequencies.
+- Chi-squared distance centred on the marginal distribution of the contingency table is used to
+measure the relatedness between any two samples in k -dimensional space (k - number of
+alleles).
+- Resulting factorial axes can be ordered according to their eigenvalues and the first axis
+corresponding to the largest eigenvalue explains the more general pattern or structure
+contained in the data set.

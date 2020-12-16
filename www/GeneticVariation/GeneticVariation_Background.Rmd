@@ -1,0 +1,153 @@
+---
+title: "GeneticVariation_Multiplicity_RarefactionCurves_Methods"
+output: html_document
+---
+
+### **Allele Frequency**
+
+#### **Background**
+
+Loci and alleles are the basic units measured in population genetics. A locus is a distinct genetic unit under consideration, such as an entire gene, a single nucleotide base pair (A-T and C-G), or a string of nucleotides. For each genetic locus there can be several variants, known as alleles. Single nucleotide polymorphisms (SNPs) are substitutions of a single nucleotide at a specific position in the genome. In a diploid organism, an SNP locus can therefore either contain two copies of the same allele making that locus monomorphic, or two different alleles making the locus polymorphic. Simple sequence repeats (SSRs, also known as microsatellites) are sets of repeated DNA sequences at a locus on a chromosome. They can therefore contain multiple substitutions and more than two alleles.
+
+The variation of alleles across loci segregate individuals and populations from one another genetically, and underpin all subsequent measures used in population genetics. The allele frequency is simply the relative frequency of chromosomes across all individuals within a population that carry a specific allele. This is calculated from the frequency of observed genotypes within a population.
+
+#### **Calculation**
+
+Considering an SNP within a diploid population with the alleles B and b, the genotype frequencies are represented as BB (homozygous B), bb (homozygous b) and Bb (heterozygous). The allele frequency is calculated as follows:
+
+![](Eqn_AlleleFrequency.png)
+
+---
+
+### **Allelic Richness**
+
+#### **Background**
+
+The number of alleles (A) and allelic richness (Ar) are representative of the amount of variation within a population. This is important in the context of long-term conservation as populations containing higher levels of genetic variability are expected to be more able to respond to selection pressures and maintain the health of individuals [(Petit, et al. 2008)]( https://doi.org/10.1111/j.1523-1739.1998.96489.x). Ar may also be a useful indicator of past population bottlenecks or decreases in population size (Nei et al. 1975).
+
+A found in a studied population depends on sample size, as increased sampling increases the chance of finding new alleles. Ar is therefore used a special case of A corrected for sample size differences between populations using rarefaction [(Kalinowski 2004)](https://doi.org/10.1023/B:COGE.0000041021.91777.1a).
+
+The effective number of alleles (Ae) represents the actual genetic diversity present across numerous individuals within a population. Ae is the number of alleles that would be expected at each locus in a population under Hardy-Weinberg (H-W) equilibrium.  It is therefore closely related to the expected heterozygosity of a population (He). This is also referred to as ‘Nei’s Genetic Diversity, D’ / ‘gene diversity, v’.  It is itself a special case of Ar as defined by [Kalinowski (2004)](https://doi.org/10.1023/B:COGE.0000041021.91777.1a). Like Ae, He is the proportion of heterozygotes expected under H-W equilibrium and can be calculated based on these principles. Ae is often far lower than A. This is often due to several characteristics of the population such as fluctuating population sizes across generations, overlapping generations, non-random mating (sexual selection etc.), number of offspring produced by individuals varying more than by chance, and unequal sex ratios.
+
+#### **Calculations**
+
+##### **Number of Alleles (A and Ap)**
+
+![](Eqn_A_Ap.png)
+##### **Rarefied Allelic Richness (Ar and pAr)**
+
+![](Eqn_Ar_pAr.png)
+
+##### **Effective Number of Alleles and Heterozygosity**
+
+Ae across all loci in a population is calculated as the harmonic mean, as this is especially sensitive to the smallest values in a dataset, and therefore reflects smaller past populations more so than the arithmetic mean. This makes using the harmonic mean better to assess the long-term effects of bottlenecking (population substantially reduced for a period) and founder effects (small sample of a larger population becomes geographically isolated) on populations on genetic variation through drift.
+
+![](Eqn_Ho_He_Ae.png)
+
+---
+
+### **Effective Population Size (Ne)**
+
+#### **Background**
+
+The effective population size (Ne) is a concept aimed at measuring the amount of genetic drift occurring in a population at a given time. It is the size of an idealized population (under H-W equilibrium) that would lose heterozygosity from one generation to the next at the same rate as the observed population. Populations often experience dramatic fluctuations in size from one generation to the next (e.g. bottlenecks). This results in rates of genetic drift that are higher than you may expect from the census population size. Ne is also affected by overlapping generations, the spatial distribution of individuals, and by highly variable offspring numbers per ‘family’ (resulting in a non-Poisson distribution), and between sexes.
+
+#### **Calculation**
+
+A relatively simple way of viewing the Ne is through calculating the harmonic mean of the census size across the number of generations considered. This is used as this is especially sensitive to the smallest values in a dataset, and therefore reflects smaller past populations more so than the arithmetic mean. This is like how Ae is calculated, which is also determined by similar demographic processes. This calculation only accounts for fluctuating population sizes, though will give an indication of Ne for use in long-term genetic monitoring that is easily calculated from demographic data.
+
+![](Eqn_Ne.png)
+---
+
+### **Latent Genetic Potential (LGP)**
+
+#### **Background**
+
+Latent Genetic Potential (LGP) was first defined by [Bergmann et al. (1990)](https://doi.org/10.1007/BF00057667) to distinguish between the physiological and evolutionary adaptive potential of a population. They describe the 'operating genetic potential' as being the section of genetic composition which guarantees the survival of the population under currently realised conditions, being akin to the effective number of alleles (Ae / v). The remaining genetic composition in this context is currently 'latent'. This portion of genetic diversity is related to low frequency alleles in the population, which can play a large role in adaptation and evolution under changing environmental conditions. This in turn could be of great importance to forest conservation practices [(Aravanopoulos 2016)]( https://doi.org/10.1007/s40725-016-0038-8). LGP therefore represents the adaptive ability of a population, as it reflects the difference between the observed and expected number of alleles in a population across all (observed) loci.
+
+LGP has been used to infer both the potential of populations to adapt to changing conditions, and the negative impacts on stressors on this. For example, thinning of standing populations through logging has been shown to reduce both LGP and the hypothetical gametic multilocus diversity (vgam) of populations [(Rajora et al. 2000)](https://doi.org/10.1046/j.1365-294X.2000.00886.x)), as has habitat fragmentation [(O’Connell et al. 2006)](https://doi.org/10.1038/sj.hdy.6800886). LGP has also been shown to be resistant to other stressors such as forest fires [(Rajora and Pluhar 2003)](https://doi.org/10.1007/s00122-002-1169-9).
+
+#### **Calculation**
+
+![](Eqn_LGP.png)
+
+---
+
+### **Inbreeding Coefficient (FIS)**
+
+#### **Background**
+
+The inbreeding coefficient is an F-statistic, derived from local F. This is a measure of heterozygote deficiency in a population I.e. the amount of heterozygosity observed in the population against the amount expected under Hardy-Weinberg principles. F can be calculated and partitioned to take in to account the heterozygosity found at various levels of population structure and through different driving pressures. The two most commonly used statistics are the inbreeding coefficient (FIS) and the fixation coefficient (Fst), representing the heterozygote deficiency observed from a subpopulation that can be partitioned due to inbreeding, and the heterozygote deficiency of an individual within the total population that can be partitioned due to the Wahlund effect respectively. FIS specifically can be thought of as the correlation of uniting gametes relative to gametes drawn at random from a subpopulation.
+
+#### **Calculation**
+
+To calculate F statistics, you must first assess the observed and expected heterozygosity of a population. It is presented as the mean across all loci within a population.
+
+![](Eqn_FIS.png)
+
+---
+
+### **Linkage Disequilibrium**
+
+#### **Background**
+
+Linkage disequilibrium (LD) is the non-random association of alleles at different loci in each population (Weir 1979). Under linkage equilibrium (LE) alleles would be associated randomly. LD can be calculated both overall for all loci within a population and globally, and pairwise for each locus. LD between loci can be affected by many driving forces of interest in population genetics including selection, gene flow, genetic drift and mutation, along with demographic properties such as population sub-structure, asexual reproduction, bottlenecks and inbreeding. While under completely null conditions loci would eventually become in LE, these processes allow it to persist in a population (detailed in a review by [Slatkin (2008)](https://doi.org/10.1038/nrg2361)). Global pairwise LD between loci can be used in the filtering of markers prior to the generation of other genetic statistics.
+
+#### **Calculation**
+
+When considering multiple loci, this measure can be summarized with a single measure called the index of association (IA). Due to the way Vo and Ve are determined, IA is sensitive to the observed number of loci, and will invariably increase as this does. [Agapow and Burt (2001)](https://doi.org/10.1046/j.1471-8278.2000.00014.x) improved this method to account for this and yield an unbiased statistic of association (rd).
+
+![](Eqn_LinkageDisequilibrium.png)
+
+---
+
+### **Hypothetical Gametic Multilocus Diversity (vgam)**
+
+#### **Background**
+
+Hypothetical Gametic Multilocus Diversity (vgam) is a special case of gene diversity which characterizes the potential diversity of a population's gametic output. This signifies the adaptive / evolutionary potential of a sexually reproducing population, being the effective number of multilocus gametes that can be produced (Gregorius 1978). When calculating vgam it is assumed that the loci assessed are in linkage equilibrium, and that there is no fecundity selection in the population (i.e. individuals do not have a fitness advantage through traits that increase the number of offspring) (Hattemer 1991). It is therefore only a hypothetical estimation of this capacity.
+
+Genetic variation within a population is necessary for adaptation and survival in heterogeneous environments [(Muller-Stark 1995)](https://link.springer.com/book/10.1007/978-3-642-74548-5). As a measure of the ability of a population to create genetic variation and facilitate adaptation to changing environmental conditions [(Gregorius et al. 1986)](https://www.researchgate.net/profile/Gerhard_Mueller-Starck/publication/232785664_Spatial_and_temporal_genetic_differentiation_among_the_seed_in_a_stand_of_Fagus_sylvatica_L/links/564cc0c408aeafc2aaaf7654/Spatial-and-temporal-genetic-differentiation-among-the-seed-in-a-stand-of-Fagus-sylvatica-L.pdf), vgam can be indicative of a population's response to and ability to withstand long term environmental stress. This was shown in European beech (Fagus sylvatica), where more 'air pollution tolerant' sub-populations had 90 % higher vgam than more 'sensitive' sub-populations (Muller-Starck 1989). vgam has also been used to demonstrate a potential reduction in a gene pool's ability to adapt to changing conditions following anthropogenic disturbances such as logging [(Wickneswari et al. 2004)](https://ir.unimas.my/id/eprint/7132/). 
+
+
+#### **Calculation**
+
+vgam is calculated as the product of all single locus diversities (Ae) across all loci. It therefore requires He and Ae to be first calculated for each locus.
+
+![](Eqn_vgam.png)
+
+---
+
+### **References**
+
+- Agapow, P-M, Burt, A (2005) Indices of multilocus linkage disequilibrium. Molecular Ecology Notes 1 (1-2):  101-102. DOI: https://doi.org/10.1046/j.1471-8278.2000.00014.x
+
+- Aravanopoulos, Filippos A. 2016. “Conservation and Monitoring of Tree Genetic Resources in Temperate Forests.” Current Forestry Reports 2 (2): 119–29. https://doi.org/10.1007/s40725-016-0038-8
+
+- Bergmann, F., H. R. Gregorius, and J. B. Larsen. 1990. “Levels of Genetic Variation in European Silver Fir (Abies Alba) - Are They Related to the Species’ Decline?” Genetica 82 (1): 1–10. https://doi.org/10.1007/BF00057667.
+
+- Gregorius, H. R., J. Krauhausen, and G Muller-Starck. 1986. “Spatial and Temporal Genetic Differentiation among the Seed in a Stand of Fagus Sylvatica L.” Heredity 57: 255–62.
+
+- Gregorius, H. 1978. “The Concept of Genetic Diversity and Its Formal Relationship to Heterozygosity and Genetic Distance.” Mathematical Biosciences 41 (3–4): 253–71.
+
+- Hattemer, H, H. 1991. Genetic Variation in European Populations of Forest Trees. Edited by G. Muller-Starck and M. Ziehe. Frankfurt am Main: J.D. Sauerlander’s Verlag.
+
+- Kalinowski, Steven T. 2004. “Counting Alleles with Rarefaction: Private Alleles and Hierarchical Sampling Designs.” Conservation Genetics 5 (4): 539–43. https://doi.org/10.1023/B:COGE.0000041021.91777.1a
+
+- Muller-Starck, G. 1989. “Genetic Implications of Environmental Stress in Adult Forest Stands of Fagus Sylvatica L.” In Genetic Effects of Air Pollutants ~ Forest Tree Populations, edited by G Scholz, H. R Gregorius, and D. Rudin, 128–42. Berlin.
+
+- Nei, Masatoshi, Takeo Maruyama, and Ranajit Chakraborty. 1975. “The Bottleneck Effect and Genetic Variability in Populations Author ( s ): Masatoshi Nei , Takeo Maruyama and Ranajit Chakraborty Published by: Society for the Study of Evolution. Evolution 29 (1): 1–10
+
+- O’Connell, L. M., A. Mosseler, and O. P. Rajora. 2006. “Impacts of Forest Fragmentation on the Mating System and Genetic Diversity of White Spruce (Picea Glauca) at the Landscape Level.” Heredity 97 (6): 418–26. https://doi.org/10.1038/sj.hdy.6800886.
+
+- Petit, Rémy J., Abdelhamid El Mousadik, and Odile Pons. 2008. “Identifying Populations for Conservation on the Basis of Genetic Markers.” Conservation Biology 12 (4): 844–55. https://doi.org/10.1111/j.1523-1739.1998.96489.x.
+
+- Rajora, O. P., and S. A. Pluhar. 2003. “Genetic Diversity Impacts of Forest Fires, Forest Harvesting, and Alternative Reforestation Practices in Black Spruce (Picea Mariana).” Theoretical and Applied Genetics 106 (7): 1203–12. https://doi.org/10.1007/s00122-002-1169-9.
+
+- Rajora, O. P., M. H. Rahman, G. P. Buchert, and B. P. Dancik. 2000. “Microsatellite DNA Analysis of Genetic Effects of Harvesting in Old-Growth Eastern White Pine (Pinus Strobus) in Ontario, Canada.” Molecular Ecology 9 (3): 339–48. https://doi.org/10.1046/j.1365-294X.2000.00886.x.
+
+- Slatkin, Montgomery. 2008. “Linkage Disequilibrium: Understanding the Genetic Past and Mapping the Medical Future.” Nature Reviews Genetics 9 (6): 477–85. https://doi.org/10.1038/nrg2361
+
+- Weir, B. S. 1979. “Inferences about Linkage Disequilibrium.” Biometric 35 (1): 235–54.
+
+- Wickneswari, R., W. S. Ho, K. S. Lee, and C. T Lee. 2004. “Impact of Disturbance on Population and Genetic Structure of Tropical Forest Trees.” Forest Genetics 11 (3–4): 193–201.

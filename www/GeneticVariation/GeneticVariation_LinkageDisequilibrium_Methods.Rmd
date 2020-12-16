@@ -1,0 +1,32 @@
+---
+title: "GeneticVariation_Diversity_Methods"
+output: html_document
+---
+
+#### **Overview of *easyRpopgen* methodology**
+
+Linkage disequilibrium is calculated for populations using the *ia* function of the *poppr* package (ref). This calculation is described and expanded upon in the [webpage](https://grunwaldlab.github.io/Population_Genetics_in_R/Linkage_disequilibrium.html) of the creators of *poppr* which also contains many useful walkthroughs for R based population genetics analyses with the package.
+
+
+```{r, eval = FALSE}
+
+library(poppr)
+
+  link<-NULL; #Create empty object to put results in
+  for (i in unique(genind$pop)) { #Loop to calculate LD per population
+    temp<-poppr::popsub(genind, sublist = i, drop = TRUE) #Subset genind object by population i
+    x<-poppr::ia(temp, sample= 999)  #Carry out LD calculation, bootstrapping calculations over 999 iterations to assess the deviation from a null model. In the app the bootstrap value is user defined.
+    link<-rbind(link,x) #Put results into empty 'link' object
+  }
+  rownames(link)<-unique(genind$pop) #attach population to LD values
+  link<-round(link,3) #round LD values to 3 dp
+  y<-rownames(link) 
+  link<-cbind(y,link) #replace order of pop and LD values
+  colnames(link)<-c("pop","Ia","p-value.Ia", "rbarD","p-value.rD") #rename for neatness
+  link #shows index of association (Ia) and sampling depth corrected index of association (rbarD) for each population, and associated p values
+
+```
+
+#### **References**
+
+- poppr

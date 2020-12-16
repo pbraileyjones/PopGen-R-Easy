@@ -1,0 +1,172 @@
+---
+title: "GeneticVariation_Multiplicity_RarefactionCurves_Methods"
+output: html_document
+---
+
+#### **Overview of *easyRpopgen* methodology**
+
+The functions used to calculate allelic and private allelic richness come not from a published R package, but from those used by [Dupuis *et al* (2018)](https://link.springer.com/article/10.1007/s10592-018-1081-8) based on the approach of [Kalinowski (2004)](https://link.springer.com/article/10.1023/B:COGE.0000041021.91777.1a). The latter paper and approach also forms the basis of the non-R based program *HP-Rare* developed by the author [(Kalinowski, 2005)](https://doi.org/10.1111/j.1471-8286.2004.00845.x). The necessary function scripts to carry out the below analysis can be found in the "App" code for this application, and at the [GitHub directory](https://github.com/muirheadk/GBS_analysis_pipeline ) associated with the paper. If you use any measures of rarefied allelic richness make sure that you cite Dupuis *et al* (2018) in the same manner that you would cite a package or program. Rarefaction curves were visualized using *ggplot2* (REF). 
+
+Summarizing rarefied richness values has been previously shown on this page in the 'Multiplicity' section. Below is a simplified code displaying the logic behind the applications approach to generating visualizations of rarefaction curves. In this implementation, rarefaction curves are visualized only to the minimum sampling depth. That is because the code as written does not *stop* calculating rarefied richness values when a populations sampling depth is reached. Continuing to calculate rarefied values beyond the sampling depth of a population is only an **estimation** of the value, and can be associated with great uncertainty. If you try this yourself you will find that as rarefaction continues beyond the sampling depth of a population, values may become more uncertain and more unrealistic. Interractive plotting options have been kept in the code to display to the user the R code underpinning the various options for their own customization purposes.
+
+```{r, eval = FALSE}
+##############################
+######Allelic Richness########
+##############################
+
+# Extract the data to use
+  data.list = list()
+  data.list$tab <- genind@tab
+  data.list$loc.fac <- factor(genind@loc.fac)
+  data.list$pop <- factor(genind@pop)
+  
+  # Run rarefaction analyses for a series of sample sizes to generate a rarefaction curve to plot
+  min.size <- min(table(data.list$pop)) #minumum population sampling depth
+
+  y <- NULL;
+  x<-NULL;
+  z<-NULL;
+  
+  for (i in sample.size) #loop to calculate rarefied allelic richness for each population at sampling depth 1->min
+  {
+    rarefied.values <- rarefiedMatrices(data = data.list, 
+                                        g = i, 
+                                        display.progress = TRUE) #Calculate rarefied richness for each loci in population i
+    richness.matrix <- as.data.frame(rarefied.values$richness)
+    StdErr<-sapply(richness.matrix,function(x)sd(x, na.rm = TRUE)/sqrt(length(x))) #calculate SE
+    StdDev<-sapply(richness.matrix,function(x)sd(x, na.rm = TRUE)) #Calculate SD
+    Means<-colMeans(richness.matrix, na.rm = TRUE) #Calculate mean allelic richness across loci per population
+    y<-rbind(y, Means) #Merge mean Ar values of populations at sampling depth 1 -> min
+    x<-cbind(x, StdErr) #Merge SE values of populations at sampling depth 1-> min
+    z<-cbind(z, StdDev) #Merge SD values of populations at sampling depth 1 -> min
+    
+  }
+  #Convert objects to df
+  y<-as.data.frame(y)
+  x<-as.data.frame(t(x))
+  z<-as.data.frame(t(z))
+  
+  #Rearrangedfs
+  ARtab<-tidyr::gather(y, Population, AR)
+  x<-tidyr::gather(x, Population, SE) 
+  z<-tidyr::gather(z, Population, SD)
+  ARtab$SE <- x$SE #Add SE to Artab
+  ARtab$SD <- z$SD #Add SD to Artab
+  ARtab$sample_size<-sample.size #Add sample size for each rarefied value to Artab
+  
+  ARtab #View rarefied min Ar values and SE/SD for sampling depth 1 -> min per population
+
+  #Interractive plotting of rarefaction curve based on user inputs
+  plot<-ggplot(data=ARtab, mapping = aes(sample_size, AR, color=Population, group=Population))+
+    geom_point(size=1.5)
+    
+    if (input$Arcurve_error == "se_bar") {plot<-plot + geom_errorbar(aes(ymin = AR-ARtab$SE, ymax = AR + ARtab$SE, alpha = 0.1))} 
+    else if (input$Arcurve_error == "sd_bar") {plot<-plot + geom_errorbar(aes(ymin = AR-SD, ymax = AR + SD, alpha = 0.1))} 
+    else if (input$Arcurve_error == "se_col") {plot<-plot + geom_ribbon(aes(ymin = AR-SE, ymax = AR + SE, alpha = 0.1, fill = Population))}
+    else if (input$Arcurve_error == "sd_col") {plot<-plot + geom_ribbon(aes(ymin = AR-SD, ymax = AR + SD, alpha = 0.1, fill = Population))} 
+    else if (input$Arcurve_error == "none") {}
+  
+  plot<- plot +   
+  geom_line(size=1.5)+
+    scale_alpha(guide= "none")+
+    labs(x="Sample Size", y="Mean Rarefied Allelic Richness", title=input$Arcurve_titletext, color=input$Arcurve_legendtext)+
+    theme_bw()+
+    theme(
+      panel.grid = element_blank(),
+      title = element_text(size = input$Arcurve_title),
+          legend.text = element_text(size=input$Arcurve_legend),
+          axis.text = element_text(size = input$Arcurve_axistext),
+          axis.title = element_text(size = input$Arcurve_axistitle),
+          legend.title = element_text(size=input$Arcurve_legend)) +
+    theme(legend.position = input$Arcurve_legendposition)
+  
+  if(input$Arcurve_colpal == "D"){plot<-plot+ scale_color_viridis(discrete=TRUE)+ scale_fill_viridis(discrete=TRUE)}
+  else if (input$Arcurve_colpal == "magma"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "magma") + scale_fill_viridis(discrete=TRUE, option = "magma")}
+  else if (input$Arcurve_colpal == "inferno"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "inferno") + scale_fill_viridis(discrete=TRUE, option = "inferno")}
+  else if (input$Arcurve_colpal == "plasma"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "plasma") + scale_fill_viridis(discrete=TRUE, option = "plasma")}
+  else if (input$Arcurve_colpal == "cividis"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "cividis") + scale_fill_viridis(discrete=TRUE, option = "cividis")}
+  
+  plot
+  
+  
+
+##############################
+###Private Allelic Richness###
+##############################
+
+# Extract the data to use
+  data.list = list()
+  data.list$tab <- genind@tab
+  data.list$loc.fac <- factor(genind@loc.fac)
+  data.list$pop <- factor(genind@pop)
+  
+  # Run rarefaction analyses for a series of sample sizes to generate a rarefaction curve to plot
+  min.size <- min(table(data.list$pop)) #minumum population sampling depth
+
+  y <- NULL;
+  x<-NULL;
+  z<-NULL;
+  
+  for (i in sample.size) #loop to calculate rarefied allelic richness for each population at sampling depth 1->min
+  {
+    rarefied.values <- rarefiedMatrices(data = data.list, 
+                                        g = i, 
+                                        display.progress = TRUE) #Calculate rarefied richness for each loci in population i
+    richness.matrix <- as.data.frame(rarefied.values$private)
+    StdErr<-sapply(richness.matrix,function(x)sd(x, na.rm = TRUE)/sqrt(length(x))) #calculate SE
+    StdDev<-sapply(richness.matrix,function(x)sd(x, na.rm = TRUE)) #Calculate SD
+    Means<-colMeans(richness.matrix, na.rm = TRUE) #Calculate mean allelic richness across loci per population
+    y<-rbind(y, Means) #Merge mean pAR values of populations at sampling depth 1 -> min
+    x<-cbind(x, StdErr) #Merge SE values of populations at sampling depth 1-> min
+    z<-cbind(z, StdDev) #Merge SD values of populations at sampling depth 1 -> min
+    
+  }
+  #Convert objects to df
+  y<-as.data.frame(y)
+  x<-as.data.frame(t(x))
+  z<-as.data.frame(t(z))
+  
+  #Rearrangedfs
+  pARtab<-tidyr::gather(y, Population, pAR)
+  x<-tidyr::gather(x, Population, SE) 
+  z<-tidyr::gather(z, Population, SD)
+  pARtab$SE <- x$SE #Add SE to pARtab
+  pARtab$SD <- z$SD #Add SD to pARtab
+  pARtab$sample_size<-sample.size #Add sample size for each rarefied value to pARtab
+  
+  pARtab #View rarefied min pAR values and SE/SD for sampling depth 1 -> min per population
+
+  #Interractive plotting of rarefaction curve based on user inputs
+  plot<-ggplot(data=pARtab, mapping = aes(sample_size, pAR, color=Population, group=Population))+
+    geom_point(size=1.5)
+    
+    if (input$pARcurve_error == "se_bar") {plot<-plot + geom_errorbar(aes(ymin = pAR-pARtab$SE, ymax = pAR + pARtab$SE, alpha = 0.1))} 
+    else if (input$pARcurve_error == "sd_bar") {plot<-plot + geom_errorbar(aes(ymin = pAR-SD, ymax = pAR + SD, alpha = 0.1))} 
+    else if (input$pARcurve_error == "se_col") {plot<-plot + geom_ribbon(aes(ymin = pAR-SE, ymax = pAR + SE, alpha = 0.1, fill = Population))}
+    else if (input$pARcurve_error == "sd_col") {plot<-plot + geom_ribbon(aes(ymin = pAR-SD, ymax = pAR + SD, alpha = 0.1, fill = Population))} 
+    else if (input$pARcurve_error == "none") {}
+  
+  plot<- plot +   
+  geom_line(size=1.5)+
+    scale_alpha(guide= "none")+
+    labs(x="Sample Size", y="Mean Rarefied Private Allelic Richness", title=input$pARcurve_titletext, color=input$pARcurve_legendtext)+
+    theme_bw()+
+    theme(
+      panel.grid = element_blank(),
+      title = element_text(size = input$pARcurve_title),
+          legend.text = element_text(size=input$pARcurve_legend),
+          axis.text = element_text(size = input$pARcurve_axistext),
+          axis.title = element_text(size = input$pARcurve_axistitle),
+          legend.title = element_text(size=input$pARcurve_legend)) +
+    theme(legend.position = input$pARcurve_legendposition)
+  
+  if(input$pARcurve_colpal == "D"){plot<-plot+ scale_color_viridis(discrete=TRUE)+ scale_fill_viridis(discrete=TRUE)}
+  else if (input$pARcurve_colpal == "magma"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "magma") + scale_fill_viridis(discrete=TRUE, option = "magma")}
+  else if (input$pARcurve_colpal == "inferno"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "inferno") + scale_fill_viridis(discrete=TRUE, option = "inferno")}
+  else if (input$pARcurve_colpal == "plasma"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "plasma") + scale_fill_viridis(discrete=TRUE, option = "plasma")}
+  else if (input$pARcurve_colpal == "cividis"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "cividis") + scale_fill_viridis(discrete=TRUE, option = "cividis")}
+  
+  plot
+  
+```
+

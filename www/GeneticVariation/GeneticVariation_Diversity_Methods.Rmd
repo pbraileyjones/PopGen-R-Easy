@@ -1,0 +1,171 @@
+---
+title: "GeneticVariation_Diversity_Methods"
+output: html_document
+---
+
+#### **Overview of *easyRpopgen* methodology**
+
+Observed (Ho) and expected (He) heterozygosity are calculated for each locus per population using *adegenet* (REF) and *poppr* (REF), and the effective number of alleles (Ae) is calculated based on He values ( Ae = 1/(1-He) ). Mean values and standard deviation across all loci per population were calculated using the *colMeans* and *colSds* functions of the *matrixStats* package (REF), from which standard error was derived. Ho and He were compared between population using kruskal-wallis testing. Where statistically significant global effects of population is found (p < 0.05), pairwise post-hoc testing is conducted using the Wilcox test with Benjamini-Hochberg (BH) corrections for multiple comparisons. The inbreeding coefficient (FIS) was calculated per population along with 95 % confidence intervals around this value using the *hierfstat* package (REF). 95 % confidence intervals which do not overlap with zero can be considered to significantly differ from zero, and therefore indicate inbreeding within the population. dplyr (ref) and tidyr (ref) are used for data wrangling of Ae and FIS values.
+
+Below is a simplified code displaying the logic behind the application calculations of each statistic and analysis conducted.
+
+#### **Observed and Expected Heterozygosity (Ho and He)**
+
+
+```{r, eval = FALSE}
+
+library(adegenet)
+library(poppr)
+library(matrixStats)
+
+##############################
+####Observed heterozigosity###
+##############################
+
+##Calculation per population##
+
+  Ho<-NULL; #create empty object to put results in
+  for (i in unique(genind$pop)){ #loops to calculate Ho over each unique population in the genind object
+    temp<-poppr::popsub(genind, sublist = i, drop = TRUE) #subset population i
+    temp<-summary(temp) #summarize genind using adegenet functionality
+    temp<-temp$Hobs #Extract observed heterozygosity value
+    Ho<-cbind(Ho, temp) #Merge empty Ho object with Ho calculations
+  }
+  colnames(Ho)<-unique(genind$pop) #Name columns of the dataframe with genind population parameters
+  Ho #This will show you the observed heterozygosity of EACH LOCUS within EACH POPULATION
+  
+##Calculate mean Ho values across loci per population##
+  finalHo=round(as.data.frame(colMeans(Ho)),3) #calculate means per column
+  SDHo=matrixStats::colSds(as.matrix(Ho)) #calculate standard deviation per population
+  SEHo=SDHo/sqrt(nrow(Ho)) #Convert standard deviation to standard error (SE)
+  finalHo$SE=round(SEHo,3) #round SE to 3 decimal places
+  finalHo$pop=rownames(finalHo) #Create population column
+  names(finalHo)=c("Ho","SE_Ho", "pop") #Rename columns for neatness
+  finalHo #This will show you the mean Ho and SE across all loci per population
+  
+##############################
+####Expected heterozigosity###
+##############################
+
+##Calculation per population##
+
+  He<-NULL; #create empty object to put results in
+  for (i in unique(genind$pop)){ #loops to calculate Ho over each unique population in the genind object
+    temp<-poppr::popsub(genind, sublist = i, drop = TRUE) #subset population i
+    temp<-summary(temp)  #summarize genind using adegenet functionality
+    temp<-temp$Hexp #Extract expecteed heterozygosity value
+    He<-cbind(He, temp) #Merge empty He object with He calculations
+  }
+  colnames(He)<-unique(genind$pop) #Name columns of the dataframe with genind population parameters
+  He #This will show you the expected heterozygosity of EACH LOCUS within EACH POPULATION
+  
+##Calculate mean Ho values across loci per population##
+  
+  He<-as.data.frame(He)  #calculate means per column
+  finalHe=round(as.data.frame(colMeans(He)),3)  #calculate standard deviation per population
+  SDHe=matrixStats::colSds(as.matrix(He)) #Convert standard deviation to standard error (SE)
+  SEHe=SDHe/sqrt(nrow(He)) #Convert standard deviation to standard error (SE)
+  finalHe$SE=round(SEHe,3) #round SE to 3 decimal places
+  finalHe$pop=rownames(finalHe) #Create population column
+  names(finalHe)=c("He","SE_He", "pop")  #Rename columns for neatness
+  finalHe #This will show you the mean Ho and SE across all loci per population
+  
+###########################
+####Statistical Analysis###
+###########################
+
+  #Kruskal test Ho
+  Ho<-as.data.frame(Ho)
+  Ho<-tidyr::pivot_longer(Ho, 1:as.numeric(length(colnames(Ho))), names_to = "pop" )
+  kr<-kruskal.test(Ho$value~Ho$pop)
+  kr
+
+  #Kruskal test He
+  He<-as.data.frame(He)
+  He<-tidyr::pivot_longer(He, 1:as.numeric(length(colnames(He))), names_to = "pop" )
+  kr<-kruskal.test(He$value~He$pop)
+  kr
+  
+  #PostHocTest Ho - only appropriate if kruskal-test p<0.05
+  pht<-pairwise.wilcox.test(Ho$value, Ho$pop,
+                              p.adjust.method = "BH")
+  pht
+  
+  #PostHocTest He - only appropriate if kruskal-test p<0.05
+  pht<-pairwise.wilcox.test(He$value, He$pop,
+                              p.adjust.method = "BH")
+  pht
+  
+```
+
+#### **Effective Number of Alleles (Ae)**
+
+```{r, eval = FALSE}
+##################################
+####Effective number of Alleles###
+##################################
+
+library(mmod)
+
+Ae = 1/(1-He) #Calculate Ae per locus from expected heterozygosity values
+  Ae<-as.data.frame(Ae) #Convert object to dataframe
+  HmeanAe=round(as.data.frame(sapply(Ae,mmod::harmonic_mean)),3) #Calculate harmonic mean of Ae across all loci per population, rounded to 3 dp
+  HmeanAe$pop=rownames(HmeanAe) #Create population column
+  names(HmeanAe)=c("Ae", "pop") #rename for neatness
+  HmeanAe #Shows mean Ae per population
+  
+```
+
+#### **Inbreeding Coefficient**
+
+```{r, eval = FALSE}
+
+##################################
+######Inbreeding Coefficient######
+##################################
+
+library(hierfstat)
+library(tidyr)
+library(dplyr)
+
+#####Calculate FIS for each loci per population#####
+
+  temp<-hierfstat::basic.stats(genind) #Calculate FIS for each locus per population
+  temp<-as.data.frame(temp$Fis) #Convert FIS object to dataframe
+  temp=tidyr::gather(temp, pop, FIS, na.rm = FALSE, convert = FALSE) #re-format dataframe for ease of summarization
+  
+###Summarize FIS values across loci per population###
+    
+   finalFIS<-temp %>% dplyr::group_by(pop) %>% #group FIS values by population
+    dplyr::summarize( 
+      N = length(FIS) - sum(is.na(FIS)), #Number of (polymorphic) loci per population, monomorphic loci do not have FIS values
+      mean = mean(FIS, na.rm = TRUE), #mean FIS value across loci per population
+      sd   = sd(FIS, na.rm =TRUE), #standard deviation of FIS values
+      se   = sd / sqrt(N), #standard error of FIS values
+    )
+   
+  finalFIS$mean<-round(finalFIS$mean, 3) #round mean values to 3 dp
+  finalFIS$sd<-round(finalFIS$sd, 3) #round sd values to 3 dp
+  finalFIS$se<-round(finalFIS$se, 3) #round sd values to 3 dp
+  names(finalFIS)=c("pop","N", "Fis","SD","SE") #rename columns for neatness
+
+###Calculate 95 % Confidence Intervals###
+  
+  pop<-unique(genind$pop) #Create population object
+  bootFIS<-hierfstat::boot.ppfis(genind, nboot=999, diploid = TRUE, quantile = c(0.95)) #bootstrap FIS confidence intervals
+  bootFIS<-as.data.frame(bootFIS$fis.ci) #Convert object to df
+  bootFIS$ci<-paste("(",bootFIS$ll,",", bootFIS$hl,")") #create single column of upper and lower confidence intervals
+  bootFIS<-cbind(pop, bootFIS) #combine bootstrapped CI values and pop
+
+```
+
+
+#### **References**
+
+- adegenet
+- poppr
+- matrixStats
+- mmod
+- tidyr
+- dplyr
+- hierfstat
