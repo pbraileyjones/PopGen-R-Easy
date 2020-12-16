@@ -30,38 +30,33 @@ body <-dashboardBody(
     
     #DATA IMPORT R FILE
     tabItem (tabName = "imp", #DATA FILTERING
-    source(file.path("ui", "DataImport.R"),  local = TRUE)$value,
+    source(file.path("ui/DataImport.R"),  local = TRUE)$value,
     ),
     
     #DATA FILTERING R FILE
     tabItem (tabName = "filt", #DATA FILTERING
-             source(file.path("ui", "DataFilter.R"),  local = TRUE)$value,
+             source(file.path("ui/DataFilter.R"),  local = TRUE)$value,
     ),
     
     #GENETIC VARIATION R FILE
     tabItem (tabName = "div", #DATA FILTERING
-             source(file.path("ui", "GeneticVariation.R"),  local = TRUE)$value,
+             source(file.path("ui/GeneticVariation.R"),  local = TRUE)$value,
     ),
     
     #POPULATION STRUCTURE R FILE
     tabItem (tabName = "gst", #DATA FILTERING
-             source(file.path("ui", "PopStructure.R"),  local = TRUE)$value,
+             source(file.path("ui/PopStructure.R"),  local = TRUE)$value,
     ),
     
     #ORDINATION R FILE
     tabItem (tabName = "ordinations", #DATA FILTERING
-             source(file.path("ui", "Ordinations.R"),  local = TRUE)$value,
+             source(file.path("ui/Ordinations.R"),  local = TRUE)$value,
     ),
     
     #ORDINATION R FILE
     tabItem (tabName = "about", #ABOUT
-             source(file.path("ui", "About.R"),  local = TRUE)$value,
-    )#,
-    
-    #LIFEGENMON Phenology Monitoring
-    #tabItem (tabName = "lgm", #ABOUT
-    #         source(file.path("ui", "LGM_Phenology.R"),  local = TRUE)$value,
-    #)
+             source(file.path("ui/About.R"),  local = TRUE)$value,
+    )#
     
   )#END OF 'tabItems'
   
