@@ -236,11 +236,10 @@ output$shapePCoA<-renderUI ({
 
 #Ordinations
 
-source(file.path("server", "Ordinations_PCoA_server.R"),  local = TRUE)$value
+source(file.path("server/Ordinations_PCoA_server.R"),  local = TRUE)$value
 
-source(file.path("server", "Ordinations_PCA_server.R"),  local = TRUE)$value
+source(file.path("server/Ordinations_PCA_server.R"),  local = TRUE)$value
 
-source(file.path("server", "Ordinations_PCA_server.R"),  local = TRUE)$value
 
 
 
