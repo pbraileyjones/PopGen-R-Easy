@@ -598,9 +598,9 @@ appCSS <- "
 
 #RUN SHINY APP
 
-ui<- source(file.path("ui", "ui.R"),  local = TRUE)$value
+ui<- source(file.path("ui/ui.R"),  local = TRUE)$value
 
-server<- source(file.path("server", "server.R"),  local = TRUE)$value
+server<- source(file.path("server/server.R"),  local = TRUE)$value
 
 shinyApp(ui, server)
 
