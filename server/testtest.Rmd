@@ -1,0 +1,17 @@
+---
+title: "DataImport_Formatting_RMD"
+output: html_document
+---
+
+#Data Import
+
+Files are imported in to the easyRpopgen application through the poppr R package. The preferred input format is the GenAlex file format, which gives the user the ability to easily include population metadata for their samples without uploading additional files, though users can also import STRUCTURE files. Poppr can additionally handle FSTAT, GENETIX file import, which we will address in future updates of the application. Below we detail how data must be formatted for import into the application.
+
+###GeneAlEx Format (.csv / .xlsx)
+
+The best practice of GeneAlEx data formatting is detailed thoroughly in the poppr user manual (https://grunwaldlab.github.io/Population_Genetics_in_R/Data_Preparation.html). This application utilizes the *poppr* import functionality for this, so consult this web link for further information. GeneAlEx files are formatted with individuals in Rows and loci in Columns. The first two rows and first two columns of the data frame are reserved for summary descriptions of the data, as shown in the image below. Data MUST be formatted as shown to be correctly read by the application. The first three columns of row 1 must contain the number of loci, samples and populations in the dataset, in that order. From the fourth column onward users must define the populations within their data (row 2), and the number of individuals within each population (row 1), matched by column. Users can define as many populations as they wish but these must be represented in the ‘Pop’ column. Users can also optionally include a project ID within the second row of column A, which can be used as the project ID for all downloaded files from the application.
+
+For loci, each column represents an allele. Loci can be defined by one (haploid) or two (diploid) columns. The poppr application can handle multiple (multiploid) columns though it is not recommended as easyRpopgen is optimized for diploid data and multiploid data may not be handled well by some R packages, resulting in misinterpretation of the data.  Missing data for a locus or allele must be coded with a zero (0).
+
+Note for microsatellite data:
+When working with microsatellite data each locus will be coded using multiple numbers for each allele (e.g. contigA Allele A = 157, ContigA Allele B = 137). In this case missing values MUST BE CODED WITH A SIGNLE ZERO AND NOT MULTIPLE ZEROS or it will NOT be read as missing data by the import function, and will result in mis-analysis of your data. Make sure to check your .csv file in a basic text reader such as ‘notepad’ for this- it will not show up if you are viewing your input file in excel.
