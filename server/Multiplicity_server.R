@@ -579,33 +579,38 @@ pArRareCurve <- eventReactive(input$prarecurveGO, {
   min.size <- min(table(data.list$pop))
   
   if (input$parsteps == "all") {
-  
-  sample.size <- seq(from = 1, to = min.size) }
+    
+    sample.size <- seq(from = 1, min.size) 
+  }
   
   else if (input$parsteps == "partial")  {
-  
-  sample.size <- seq(from = 1, to = (min.size), by = (min.size/30))
-  
+    
+    sample.size <- seq(from = 1, to = min.size, by = (min.size/30))
+    
   }
+  
   
   y <- NULL;
   x<-NULL;
+  z<-NULL;
   
   for (i in sample.size)
   {
     rarefied.values <- rarefiedMatrices(data = data.list, 
                                         g = i, 
                                         display.progress = TRUE)
-    private.matrix <- as.data.frame(rarefied.values$private)
-    Std<-sapply(private.matrix,function(x)sd(x, na.rm = TRUE)/sqrt(length(x)))
-    Means<-colMeans(private.matrix, na.rm = TRUE)
+    richness.matrix <- as.data.frame(rarefied.values$private)
+    StdErr<-sapply(richness.matrix,function(x)sd(x, na.rm = TRUE)/sqrt(length(x)))
+    StdDev<-sapply(richness.matrix,function(x)sd(x, na.rm = TRUE))
+    Means<-colMeans(richness.matrix, na.rm = TRUE)
     y<-rbind(y, Means)
-    x<-cbind(x, Std)
+    x<-cbind(x, StdErr)
+    z<-cbind(z, StdDev)
     
   }
   y<-as.data.frame(y)
   x<-as.data.frame(t(x))
-  
+  z<-as.data.frame(t(z))
   
   
   pARtab<-tidyr::gather(y, Population, pAR)
@@ -613,10 +618,13 @@ pArRareCurve <- eventReactive(input$prarecurveGO, {
   
   pARtab<-tidyr::gather(y, Population, pAR)
   x<-tidyr::gather(x, Population, SE)
+  z<-tidyr::gather(z, Population, SD)
   pARtab$SE <- x$SE
+  pARtab$SD <- z$SD
   pARtab$sample_size<-sample.size
   
   pARtab
+  
 })
 
 pArRareCurve2<-reactive({
@@ -625,20 +633,36 @@ pArRareCurve2<-reactive({
   
   pARtab<-pArRareCurve()
   
-  ggplot(data=pARtab, mapping = aes(sample_size, pAR, color=Population, group=Population))+
-    geom_point(size=1.5)+
+  plot<-ggplot(data=pARtab, mapping = aes(sample_size, pAR, color=Population, group=Population))+
+    geom_point(size=1.5)
+  
+  if (input$pArcurve_error == "se_bar") {plot<-plot + geom_errorbar(aes(ymin = pAR-pAR$SE, ymax = + pAR$SE, alpha = 0.1))} 
+  else if (input$pArcurve_error == "sd_bar") {plot<-plot + geom_errorbar(aes(ymin = pAR-SD, ymax = pAR + SD, alpha = 0.1))} 
+  else if (input$pArcurve_error == "se_col") {plot<-plot + geom_ribbon(aes(ymin = pAR-SE, ymax = pAR + SE, alpha = 0.1, fill = Population))}
+  else if (input$pArcurve_error == "sd_col") {plot<-plot + geom_ribbon(aes(ymin = pAR-SD, ymax = pAR + SD, alpha = 0.1, fill = Population))} 
+  else if (input$pArcurve_error == "none") {}
+  
+  plot<- plot +   
     geom_line(size=1.5)+
-    scale_alpha(guide = "none") +
-    geom_errorbar(aes(ymin = pAR-pARtab$SE, ymax = pAR + pARtab$SE, alpha = 0.25)) +  
-    scale_color_viridis(discrete=TRUE) +
-    labs(x="Sample size", y="Mean private allelic richness (pAR)", title="Rarefaction curves for private allelic richness", color="Population")+
+    scale_alpha(guide= "none")+
+    labs(x="Sample Size", y="Mean Rarefied Private Allelic Richness", title=input$pArcurve_titletext, color=input$pArcurve_legendtext)+
     theme_bw()+
-    theme(title = element_text(size = input$pArcurve_title),
-           legend.text = element_text(size=input$pArcurve_legend),
-           axis.text = element_text(size = input$pArcurve_axistext),
-           axis.title = element_text(size = input$pArcurve_axistitle),
-           legend.title = element_text(size=input$pArcurve_legend)) +
+    theme(
+      panel.grid = element_blank(),
+      title = element_text(size = input$pArcurve_title),
+      legend.text = element_text(size=input$pArcurve_legend),
+      axis.text = element_text(size = input$pArcurve_axistext),
+      axis.title = element_text(size = input$pArcurve_axistitle),
+      legend.title = element_text(size=input$pArcurve_legend)) +
     theme(legend.position = input$pArcurve_legendposition)
+  
+  if(input$pArcurve_colpal == "D"){plot<-plot+ scale_color_viridis(discrete=TRUE)+ scale_fill_viridis(discrete=TRUE)}
+  else if (input$pArcurve_colpal == "magma"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "magma") + scale_fill_viridis(discrete=TRUE, option = "magma")}
+  else if (input$pArcurve_colpal == "inferno"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "inferno") + scale_fill_viridis(discrete=TRUE, option = "inferno")}
+  else if (input$pArcurve_colpal == "plasma"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "plasma") + scale_fill_viridis(discrete=TRUE, option = "plasma")}
+  else if (input$pArcurve_colpal == "cividis"){plot<-plot+scale_color_viridis(discrete=TRUE, option = "cividis") + scale_fill_viridis(discrete=TRUE, option = "cividis")}
+  
+  plot
   
 })
 
