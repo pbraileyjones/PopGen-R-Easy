@@ -1,139 +1,55 @@
-R.version
-RStudio.Version()
-
-#########################
-####Environment SetUp####
-#########################
+##########################
+####Environment Set-Up####
+##########################
 
 #To install packages from Bioconductor you need BiocManager
-#if (!require('BiocManager'))
-#  install.packages("BiocManager")
+if (!require('BiocManager'))
+  install.packages("BiocManager")
+library(BiocManager)
 
 #To install packages from GitHub you need devtools
-#if (!require('devtools'))
-#  install.packages("devtools")
+if (!require('devtools'))
+  install.packages("devtools")
+library(devtools)
 
 #CRAN packages
-#packages_CRAN = c("dartR","dplyr", "adegenet", "shinyjs", "shinycssloaders", "poppr", "adegenet", "shinydashboard", "shiny", "viridis", "ade4", "dartR", "gdata", "DescTools", "pegas","matrixStats", "mmod", "genetics", "PopGenReport", "ggplot2", "ggExtra", "ggpubr", "data.table", "formattable", "shinyWidgets", "pophelper", "DT", "tidyr", "soc.ca", "hierfstat") #List of packages
 
-#package.check <- lapply( #Checks whether packages are installed and if not it installs them
-#  packages_CRAN,
-#  FUN = function(x) {
-#    if (!require(x, character.only = TRUE)) {
-#      install.packages(x, dependencies = TRUE)
- #     library(x, character.only = TRUE)
-#    }
-#  }
-#)
+packages_CRAN = c("xfun","plyr","dartR","dplyr", "adegenet", "shinyjs", "shinycssloaders", "poppr", "adegenet", "shinydashboard", "ape", "plotly",
+                  "shiny", "viridis", "ade4", "dartR", "gdata", "DescTools", "pegas","matrixStats", "mmod", "genetics", "PopGenReport",
+                  "ggplot2", "ggExtra", "ggpubr", "data.table", "formattable", "shinyWidgets", "pophelper", "DT", "tidyr", "soc.ca",
+                  "hierfstat") #List of packages
+
+package.check <- lapply( #Checks whether packages are installed and if not it installs them
+  packages_CRAN,
+  FUN = function(x) {
+    if (!require(x, character.only = TRUE)) {
+      install.packages(x, dependencies = TRUE)
+      library(x, character.only = TRUE)
+    }
+  }
+)
 
 #Bioconductor Packages
-#if (!require('SNPRelate')) 
-#  BiocManager::install('SNPRelate')
-#if (!require('qvalue')) 
-#  BiocManager::install('qvalue')
+if (!require('SNPRelate')) 
+  BiocManager::install('SNPRelate')
+if (!require('qvalue')) 
+  BiocManager::install('qvalue')
 
 #GitHub Package
-#devtools::install_github('royfrancis/pophelper')
+devtools::install_github('royfrancis/pophelper')
 
 
+##########################
+##########################
+#####GLOBAL FUNCTIONS#####
+##########################
+##########################
 
+#####################
+####Custom Scripts###
+#####################
 
-#######GLOBAL.R
-
-###Package install
-
-#BiocManager::install("SNPRelate")
-#install.packages("formattable")
-#install.packages("data.table")
-#install.packages("shinyjs")
-#devtools::install_github('andrewsali/shinycssloaders')
-#install.packages("poppr")
-#install.packages("adegenet")
-#install.packages("shinydashboard")
-#install.packages("shiny")
-#install.packages("plotly")
-#install.packages("dplyr")
-#install.packages("viridis")
-#install.packages("ade4")
-#install.packages("dartR")
-#install.packages("radiator")
-#install.packages("gdata")
-#install.packages("DescTools")
-#install.packages("multcompView")
-#instll.packages("pegas")
-#install.packages("matrixStats")
-#install.packages("mmod")
-#install.packages("PopGenReport")
-#install.packages("ggplot2")
-#install.packages("shinyWidgets")
-#install.packages("formattable")
-#install.packages("pophelper")
-#install.packages("adegenet")
-#install.packages("poppr")
-#install.packages("soc.ca")
-#install.packages("radiant.data")
-#install.packages("pcadapt")
-#install.packages("periscope")
-
-
-##dartR install
-#################PYTHON
-#################BiocManager::install("SNPRelate")
-#################BiocManager::install("qvalue")
-#################install.packages("dartR")
-
-#radiator install
-#################devtools::install_github("thierrygosselin/radiator")
-
-#pophelper install
-##################devtools::install_github('royfrancis/pophelper')
-
-
-
-###Access libraries
-library(SNPRelate)
-library(dplyr)
-library(adegenet)
-library(shinyjs)
-library(shinycssloaders)
-library(poppr)
-library(adegenet)
-library(shinydashboard)
-library(shiny)
-library(plotly)
-library(dplyr)
-library(viridis)
-library(ade4)
-library(dartR)
-library(gdata)
-library(DescTools)
-library(multcompView)
-library(pegas)
-library(matrixStats)
-library(mmod)
-library(genetics)
-library(PopGenReport)
-library(ggplot2)
-library(ggExtra)
-library(ggpubr)
-library(data.table)
-library(formattable)
-library("shinyWidgets")
-library(pophelper)
-library(DT)
-library(tidyr)
-library(pophelper)
-library(soc.ca)
-library(radiant.data)
-library(hierfstat)
-library(ape)
-library(xfun)
-library(plotly)
-library(data.table)
-
-#Custom Scripts
-
-#Na alleles
+#Calculate number of alleles for a population
 Na=function (x, population)
 {
   sub=poppr::popsub(x, population, drop=TRUE)
@@ -141,8 +57,7 @@ Na=function (x, population)
   sum$loc.n.all
 }
 
-
-#LGP
+#Calculate Latent Genetic Potential for a population
 LGPcalc=function (x, population = "ALL")
 {
   z = poppr::popsub(x, population, drop = TRUE) #seperates genind by population
@@ -151,7 +66,7 @@ LGPcalc=function (x, population = "ALL")
   LGP=(sum(sum$loc.n.all-q)) #calculate LGP
 }
 
-#vgam
+#Calculate hypothetical gametic multilocus diversity for a population
 Vgamcalc=function (x, population = "ALL") #Function to calculate vgam from a genind object
 {
   z=poppr::popsub(x, sublist = population, drop = TRUE) #subset genind by population
@@ -162,24 +77,14 @@ Vgamcalc=function (x, population = "ALL") #Function to calculate vgam from a gen
 }
 
 
+#####################
+####Other Scripts####
+#####################
 
-###Script from vegan package
-#Create the function 'veganCovEllipse'
-#This is already a hidden function in the vegan package, but is needed to be performed as it's own 'thing' here
-veganCovEllipse<-function (cov, center = c(0, 0), scale = 1, npoints = 100) 
-{
-  theta <- (0:npoints) * 2 * pi/npoints
-  Circle <- cbind(cos(theta), sin(theta))
-  Q <- chol(cov, pivot = TRUE)
-  o <- attr(Q, "pivot")
-  t(center + scale * t(Circle %*% Q[, o]))
-}
+##################Export to STRUCTURE format from genind object.######################
 
-
-
-# Function to export to STRUCTURE format from genind object.
-# genind objects are created in the R package adegenet.  The function below is an R function.
 # Lindsay V. Clark, 26 July 2015
+# CITATION: Clark. L, (2017) R_genetics_conv, GitHub repository, https://github.com/lvclark/R_genetics_conv, DOI: 10.5281/zenodo.846816
 
 # obj: genind object
 # file: file name to write
@@ -235,7 +140,11 @@ genind2structure <- function(obj, file="", pops=FALSE){
 }
 
 
+##################Convert numerical values to words########################
+
 #from: https://gist.github.com/psychemedia/150cb9901529da58124a
+# CITATION: Hirst, T, (2014) numbers2words.R, GitHub repository [accessed 12/17/2020], https://gist.github.com/psychemedia/150cb9901529da58124a
+
 numbers2words <- function(x){
   ## Function by John Fox found here: 
   ## http://tolstoy.newcastle.edu.au/R/help/05/04/2715.html
@@ -288,12 +197,9 @@ numbers2words <- function(x){
 }
 
 
+###############Rarefied Allelic and Private Allelic Richness#################
 
-
-
-
-###Scripts to be used that are not part of packages
-
+#CITATION: https://doi.org/10.1007/s10592-018-1081-8
 
 # Private allele rarefaction functions
 # Jeff Oliver
@@ -592,7 +498,15 @@ rarefiedMatrices <- function(data, g = 2, display.progress = FALSE) {
 
 
 
-#Advanced Shiny Features
+
+
+#################################
+#################################
+#####Advanced Shiny Features#####
+#################################
+#################################
+
+#I don't remember what these do but i'm scared to remove them
 
 appCSS <- "
 #loading-content {
@@ -608,11 +522,18 @@ appCSS <- "
 }
 "
 
-#RUN SHINY APP
+############################
+############################
+#####RUN THE SHINY APPS#####
+############################
+############################
 
+#User interface
 ui<- source(file.path("ui", "ui.R"),  local = TRUE)$value
 
+#Server
 server<- source(file.path("server", "server.R"),  local = TRUE)$value
 
+#App
 shinyApp(ui, server)
 
