@@ -127,6 +127,9 @@ library(soc.ca)
 library(radiant.data)
 library(hierfstat)
 library(ape)
+library(xfun)
+library(plotly)
+library(data.table)
 
 #Custom Scripts
 

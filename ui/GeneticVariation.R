@@ -260,105 +260,122 @@
                                      tabPanel(title = "Private Allelic Richness",
                                               
                                               fluidRow(
-                                                column(width = 2,
-                                                       h4("Plot"),
-                                                       tags$hr()),
-                                                column(width = 4,
-                                                       h4("Text Sizes"),
-                                                       tags$hr()
-                                                ),
-                                                column(width = 2,
-                                                       h4 ("Figure Dimensions"),
-                                                       tags$hr()
-                                                ),
-                                                column(width = 2,
-                                                       h4 ("Color Palette"),
-                                                       tags$hr()
-                                                ),
-                                                column(width = 2,
-                                                       h4 ("Download"),
-                                                       tags$hr()
-                                                )
-                                                
+                                                  column(width = 2,
+                                                         h4("Plot Options"),
+                                                         tags$hr()),
+                                                  column(width = 4,
+                                                         h4("Text Options"),
+                                                         tags$hr()
+                                                  ),
+                                                  column(width = 2,
+                                                         h4 ("Figure Options"),
+                                                         tags$hr()
+                                                  ),
+                                                  column(width = 2,
+                                                         h4 ("Color Palette"),
+                                                         tags$hr()
+                                                  ),
+                                                  column(width = 2,
+                                                         h4 ("Download"),
+                                                         tags$hr()
+                                                  )
+                                                  
                                               ), #end of fluid row
                                               
                                               fluidRow(
-                                                
-                                                column(width = 2,
-                                                       actionButton("prarecurveGO", "Render curve"),
-                                                       
-                                                       br(),
-                                                       
-                                                       radioButtons("parsteps", "Calculation steps",
-                                                                    c("Calculate all points (smoother)" = "all",
-                                                                      "Calculate a subset of points (faster)" = "partial"),
-                                                                    inline = TRUE)
-                                                ),
-                                                
-                                                column(width = 2,
-                                                       
-                                                       numericInput('pArcurve_title', 'Title', 
-                                                                    value = 25, min = NA, max = NA, 
-                                                                    step = 1, width = NULL),
-                                                       numericInput('pArcurve_axistitle', 'Axis Title', 
-                                                                    value = 20, min = NA, max = NA, 
-                                                                    step = 1, width = NULL)
-                                                ),
-                                                
-                                                column(width = 2,
-                                                       
-                                                       numericInput('pArcurve_axistext', 'Axis Text', 
-                                                                    value = 15, min = NA, max = NA, 
-                                                                    step = 1, width = NULL),
-                                                       numericInput('pArcurve_legend', 'Legend Text', 
-                                                                    value = 15, min = NA, max = NA, 
-                                                                    step = 1, width = NULL)
-                                                       
-                                                ),
-                                                
-                                                column(width = 2,
-                                                       
-                                                       selectInput("pArcurve_legendposition", label = ("Legend Position"), 
-                                                                   choices = list("top" = "top",
-                                                                                  "bottom" = "bottom",
-                                                                                  "left" = "left",
-                                                                                  "right" = "right"),
-                                                                   selected = "bottom"),
-                                                       
-                                                       numericInput('pArcurve_X', 'X (pixels)', 
-                                                                    value = 800, min = NA, max = NA, 
-                                                                    step = 1, width = NULL),
-                                                       numericInput('pArcurve_Y', 'Y (pixels)', 
-                                                                    value = 600, min = NA, max = NA, 
-                                                                    step = 1, width = NULL)
-                                                ),
-                                                
-                                                column(width = 2,
-                                                       
-                                                       selectInput("pArcurve_colpal", label = ("Color Palette"), 
-                                                                   choices = list("Viridis palette default" = "D", 
-                                                                                  "Viridis palette magma" = "magma", 
-                                                                                  "Viridis palette inferno" = "inferno", 
-                                                                                  "Viridis palette plasma" = "plasma", 
-                                                                                  "Viridis palette cividis" = "cividis"), 
-                                                                   selected = "D",
-                                                                   selectize = FALSE),
-                                                       
-                                                ),
-                                                column(width = 2,
-                                                       
-                                                       uiOutput("DL_pArcurve_button"),
-                                                       
-                                                       tags$br(),
-                                                       
-                                                       uiOutput("DL_pArcurve_button_tiff"),
-                                                       
-                                                       
-                                                )
-                                                
-                                                
-                                                
-                                                
+                                                  
+                                                  column(width = 2,
+                                                         actionButton("prarecurveGO", "Render curve"),
+                                                         
+                                                         hr(),
+                                                         br(),
+                                                         
+                                                         awesomeRadio(inputId = "parsteps" , 
+                                                                      label = "Calculation steps" ,
+                                                                      status = "success",
+                                                                      choices = c("Calculate all points (smoother)" = "all",
+                                                                                  "Calculate a subset of points (faster)" = "partial")),
+                                                         awesomeRadio(inputId = "pArcurve_error" , 
+                                                                      label = "Error values" ,
+                                                                      status = "success",
+                                                                      choices = c("Standard Error (whiskers)" = "se_bar",
+                                                                                  "Standard Error (ribbon)" = "se_col",
+                                                                                  "Standard Deviation (whiskers)" = "sd_bar",
+                                                                                  "Standard Deviation (ribbon)" = "sd_col",
+                                                                                  "None" = "none"
+                                                                      ),
+                                                                      selected = "se_bar"),
+                                                         
+                                                  ),
+                                                  
+                                                  column(width = 2,
+                                                         
+                                                         textInput("pArcurve_titletext", "Title text", value = "Private Allelic Richness Rarefaction Curves"),
+                                                         
+                                                         numericInput('pArcurve_title', 'Title Size', 
+                                                                      value = 25, min = NA, max = NA, 
+                                                                      step = 1, width = NULL),
+                                                         numericInput('pArcurve_axistitle', 'Axis Title Size', 
+                                                                      value = 20, min = NA, max = NA, 
+                                                                      step = 1, width = NULL)
+                                                  ),
+                                                  
+                                                  column(width = 2,
+                                                         
+                                                         textInput("pArcurve_legendtext", "Legend text", value = "Population"),
+                                                         
+                                                         numericInput('pArcurve_axistext', 'Axis Text Size', 
+                                                                      value = 15, min = NA, max = NA, 
+                                                                      step = 1, width = NULL),
+                                                         numericInput('pArcurve_legend', 'Legend Text Size', 
+                                                                      value = 15, min = NA, max = NA, 
+                                                                      step = 1, width = NULL)
+                                                         
+                                                  ),
+                                                  
+                                                  column(width = 2,
+                                                         
+                                                         selectInput("pArcurve_legendposition", label = ("Legend Position"), 
+                                                                     choices = list("top" = "top",
+                                                                                    "bottom" = "bottom",
+                                                                                    "left" = "left",
+                                                                                    "right" = "right"),
+                                                                     selected = "bottom"),
+                                                         
+                                                         numericInput('pArcurve_X', 'X Dimensions (pixels)', 
+                                                                      value = 800, min = NA, max = NA, 
+                                                                      step = 1, width = NULL),
+                                                         numericInput('pArcurve_Y', 'Y Dimensions (pixels)', 
+                                                                      value = 600, min = NA, max = NA, 
+                                                                      step = 1, width = NULL)
+                                                  ),
+                                                  
+                                                  column(width = 2,
+                                                         
+                                                         selectInput("pArcurve_colpal", label = ("Color Palette"), 
+                                                                     choices = list("Viridis palette default" = "D", 
+                                                                                    "Viridis palette magma" = "magma", 
+                                                                                    "Viridis palette inferno" = "inferno", 
+                                                                                    "Viridis palette plasma" = "plasma", 
+                                                                                    "Viridis palette cividis" = "cividis"), 
+                                                                     selected = "D",
+                                                                     selectize = FALSE),
+                                                         
+                                                  ),
+                                                  column(width = 2,
+                                                         
+                                                         uiOutput("DL_pArRareCurvebutton"),
+                                                         
+                                                         tags$br(),
+                                                         
+                                                         uiOutput("DL_pArRareCurvebutton_tiff"),
+                                                         
+                                                         
+                                                  )
+                                                  
+                                                  
+                                                  
+                                                  
                                               ),
                                               
                                               hr(),
