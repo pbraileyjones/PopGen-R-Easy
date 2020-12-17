@@ -75,11 +75,11 @@ The application is split in to five sections:
 
 ### **Data Input**
 
-hr()
+---
 
 ## **Acknowlegments**
 
-hr()
+---
 
 ### **App Creators and Contributors** 
 
