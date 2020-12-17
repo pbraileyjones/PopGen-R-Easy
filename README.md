@@ -91,6 +91,6 @@ Marjana Westergren marjana.westergren@gozdis.si
 
 Marko Bajc marko.bajc@gozdis.si
 
-###**LifeGenMon Project Coordinator**
+### **LifeGenMon Project Coordinator**
 
 Hojka Kraigher hojka.kraigher@gozdis.si 
