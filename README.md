@@ -53,7 +53,7 @@ devtools::install_github('royfrancis/pophelper')
 ####Run the Shiny App from this Repository####
 ##############################################
 
-runGitHub("easyRpopgen", "pbraileyjones", refs = "main")
+runGitHub("easyRpopgen", "pbraileyjones", ref = "main")
 
 ```
 
