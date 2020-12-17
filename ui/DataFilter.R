@@ -76,7 +76,16 @@
                                  
                              )
                    )
-                   )
+                   ), #end of tabPanel
+                 
+                 tabPanel(title = "Filtering methods and code",
+                   
+                   box(width = 12,
+                       
+                       includeMarkdown("www/DataFilter/DataFilter_Methods_RMD.Rmd")
+                       )
+                   
+                 ) #end of tabPanel
                  #, 
                  #end of tabpanel
                    #tabPanel("Outlier Detection",

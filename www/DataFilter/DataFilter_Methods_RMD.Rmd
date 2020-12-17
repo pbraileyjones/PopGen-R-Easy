@@ -1,0 +1,138 @@
+---
+title: "Filtering"
+output: html_document
+---
+
+Below are the simplified filtering steps available in this application. The process is more complex as written within the application as there are a number of contingents on if a filtering step is carried out, but the code below will allow you to carry out each individual filtering step independently.
+
+#### **Step 1: monomorphic loci removal**
+
+The first filtering step carried out by this application is the removal of monomorphic loci. Thi is done as these loci are uninformative in assessing genetic variance across populations. Loci are removed if they are monomorphic across **ALL** populations under consideration. They will not be removed if they are monomorphic in only one population.
+
+```{r}
+  
+  #Filter by polymorphism to remove any markers with NO POLYMORPHISM IN ALL SAMPLES
+  temp<-summary(genind)
+  Nalleles<-as.data.frame(temp$loc.n.all)
+  colnames(Nalleles)<-"Nalleles"
+  Nalleles$locus<-rownames(Nalleles)
+  monomorphic<-subset(Nalleles, Nalleles == 1,) 
+  monomorphic<-monomorphic$locus
+  locnames<-as.data.frame(unique(genind$loc.fac)) #all loci present in dataset
+  colnames(locnames)<-c("locnames")
+  locnames$monomorphic<-locnames$locnames %in% monomorphic 
+  locnames<-locnames[locnames$monomorphic == "FALSE",]
+  locnames<-as.character(locnames$locnames) 
+  monfilt <- genind[loc=c(locnames)]
+  
+  #Output object
+  monfilt
+
+```
+
+#### **Step 2: Filter by missing loci**
+
+```{r}
+
+  locfilt<-poppr::missingno(genind, type = "loci", cutoff= input$locf)  #Filter step: input$locf is the degree of missingness that you are willing to accept
+  #Output object
+  locfilt
+```
+
+#### **Step 3: Filter by missing individuals / genotypes**
+
+```{r}
+genfilt<-poppr::missingno(genind, type="geno", cutoff= input$genf) #Filter step: input$genf is the degree of missingness that you are willing to accept
+  #Output object
+  genfilt
+```
+
+#### **Step 4: Filter my minor allele frequency (MAF)**
+
+```{r}
+ maffilt<-poppr::informloci(genind, MAF=input$maff, quiet = FALSE)  #Filter step: input$maff is the minor allele frequency that you are filtering below
+  #Output object
+  maffilt
+```
+
+#### **Step 5: Filter by global linkage disequilibrium**
+
+```{r}
+    
+  link<-as.data.frame(poppr::pair.ia(genind)) #Calculates pairwise association between loci
+    link_sub<-subset(link, rbarD>0.70) #Identify loci pairs in LD
+    link_sub$LD <- rownames(link_sub)
+    LD<-stringr::str_split_fixed(link_sub$LD, ":", 2) #Split column in to individual loci so you can pick one to remove
+    LD<-LD[,1] #Remove one of two linked loci
+    LD #List of loci to be removed                
+    locnames<-as.data.frame(unique(genind$loc.fac)) #all loci present in dataset
+    colnames(locnames)<-c("locnames")
+    locnames$LD<-locnames$locnames %in% LD #Attatch TRUE to loci which are in LD
+    locnames<-locnames[locnames$LD == "FALSE",]
+    locnames<-as.character(locnames$locnames) #List of loci to keep
+    LDfilt <- genind[loc=c(locnames)] #subset genind object by loci that do not violate LE
+    #Output object
+    LDfilt
+
+```
+
+#### **Step 6: Filter by H-W equilibrium deviation**
+
+```{r}
+  #Filter Hardy-Weinsten (Out of HWE in > 50% samples as per Wyngaarden et al. 2018 https://doi.org/10.1002/ece3.3846)
+    #Hardy Weinberg calculation used later
+    temp <- seppop(genind) %>% lapply(pegas::hw.test, B =0)
+    temp2<-as.data.frame(temp[1])
+    L.hwe <- plyr::ldply(temp, data.frame)
+    L.hwe$locus<-rownames(temp2) #Need to figure out how to change this one
+    colnames(L.hwe)<-c("population", "chi^2","df", "p", "locus")
+    L.hwe<-L.hwe[c("population", "locus", "chi^2", "p")]
+    L.hwe$Bon.p<- p.adjust(L.hwe$p, method = "bonferroni", n = length(L.hwe$p))
+    L.hwe.sig<-L.hwe[L.hwe$Bon.p < 0.01,]
+    
+    npops<-length(unique(genind$pop))
+    HWD<-plyr::count(L.hwe.sig$locus)
+    HWD$Proportion<-HWD$freq / npops *100
+    HWD_sub<-subset(HWD, Proportion >= 50)
+    HW<-as.vector(HWD_sub$x)
+    locnames<-as.data.frame(unique(genind$loc.fac)) #all loci present in dataset
+    colnames(locnames)<-c("locnames")
+    locnames$HW<-locnames$locnames %in% HW #Attatch TRUE to SNPs which deviate from HWE
+    locnames<-locnames[locnames$HW == "FALSE",]
+    locnames<-as.character(locnames$locnames) #List of loci to keep
+    HWfilt <- genind[loc=c(locnames)] #subset genind object by loci that do not deviate from HWE
+
+```
+
+#### **Step 7: Filter outlier / non-neutral / adaptive loci**
+
+```{r, eval = FALSE}
+genlight<-gi2gl(genind) #Create genlight object from genind object
+    outflank<-gl.outflank(genlight, plot = FALSE) #Perform FST outlier testing with the outflank algorithm
+    outflank<-as.data.frame(outflank$outflank) #Create dataframe of output
+    outflank<-cbind(outflank[6], outflank[17:20]) #Subset only important columns
+    #Remove base names added
+    outflank$results.LocusName<-stringr::str_remove(outflank$results.LocusName, pattern = c(".A"))
+    outflank$results.LocusName<-stringr::str_remove(outflank$results.LocusName, pattern = c(".T"))
+    outflank$results.LocusName<-stringr::str_remove(outflank$results.LocusName, pattern = c(".C"))
+    outflank$results.LocusName<-stringr::str_remove(outflank$results.LocusName, pattern = c(".G"))
+    #Subset SNPs which are Fst outliers
+    outflank <- subset(outflank, outflank$results.OutlierFlag == TRUE )
+    
+    if (length(outflank$results.LocusName) == 0) {"no outlier loci"
+      } #no filtering necessary
+    else if (length(outflank$results.LocusName > 0)) { #Filter FST outliers
+      fstoutliers<-as.character(outflank$results.LocusName)
+      locnames<-as.data.frame(unique(genind$loc.fac)) #all loci present in dataset
+      colnames(locnames)<-c("locnames")
+      locnames$outlier<-locnames$locnames %in% fstoutliers #Attatch TRUE to loci which are in LD
+      locnames<-locnames[locnames$outlier == "FALSE",]
+      locnames<-as.character(locnames$locnames) #List of loci to keep
+      fstfilt <- genind[loc=c(locnames)] #subset genind object by loci which are neutral
+     
+    }
+    
+    #Output object
+    fstfilt
+
+```

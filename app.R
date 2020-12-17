@@ -1,26 +1,41 @@
+R.version
+RStudio.Version()
+
 #########################
 ####Environment SetUp####
 #########################
 
-## If a package is installed, it will be loaded. If any 
-## are not, the missing package(s) will be installed 
-## from CRAN and then loaded.
+#To install packages from Bioconductor you need BiocManager
+#if (!require('BiocManager'))
+#  install.packages("BiocManager")
 
-## First specify the packages of interest
-#packages_BioC = c("SNPRelate", )
+#To install packages from GitHub you need devtools
+#if (!require('devtools'))
+#  install.packages("devtools")
 
-#packages_CRAN = c("dplyr", "adegenet", "shinyjs", "shinycssloaders", "poppr" )
+#CRAN packages
+#packages_CRAN = c("dartR","dplyr", "adegenet", "shinyjs", "shinycssloaders", "poppr", "adegenet", "shinydashboard", "shiny", "viridis", "ade4", "dartR", "gdata", "DescTools", "pegas","matrixStats", "mmod", "genetics", "PopGenReport", "ggplot2", "ggExtra", "ggpubr", "data.table", "formattable", "shinyWidgets", "pophelper", "DT", "tidyr", "soc.ca", "hierfstat") #List of packages
 
-## Now load or install&load all
-#package.check <- lapply(
-#  packages,
+#package.check <- lapply( #Checks whether packages are installed and if not it installs them
+#  packages_CRAN,
 #  FUN = function(x) {
 #    if (!require(x, character.only = TRUE)) {
 #      install.packages(x, dependencies = TRUE)
-#      library(x, character.only = TRUE)
+ #     library(x, character.only = TRUE)
 #    }
 #  }
 #)
+
+#Bioconductor Packages
+#if (!require('SNPRelate')) 
+#  BiocManager::install('SNPRelate')
+#if (!require('qvalue')) 
+#  BiocManager::install('qvalue')
+
+#GitHub Package
+#devtools::install_github('royfrancis/pophelper')
+
+
 
 
 #######GLOBAL.R
@@ -108,16 +123,10 @@ library(pophelper)
 library(DT)
 library(tidyr)
 library(pophelper)
-#install.packages("soc.ca")
 library(soc.ca)
-#install.packages("radiant.data")
 library(radiant.data)
-#library(pcadapt)
-#install.packages("periscope")
-library(periscope)
 library(hierfstat)
-
-
+library(ape)
 
 #Custom Scripts
 
