@@ -1,6 +1,6 @@
 # easyRpopgen
 
-Repository for all files associated with the R-Shiny app 'easyRpopgen"
+*easyRpopgen* is a Shiny application written using the open-source R coding language, through which users can interact with a graphical user interface to carry out a comprehensive suite of fundamental population genetics analyses and generate publication quality figures based around this. The computational core underlying the interface combines the functionalities of multiple pre-existing R packages, publicly available functions and novel functions written by the authors. The primary objective of the application is to provide a seamless user interface for those unfamiliar with R. This application is also intended to serve as a learning tool for new users, and as a starting point R-based analysis pipeline for more experienced users. Users can access  the whole application script, or view simplified snippets of script intended to capture the underlying logic of each step, which they can use to recreate the application results and expand upon outside of the application.
 
 ### **Run *easyRpopgen* using RStudio**
 
