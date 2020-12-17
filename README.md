@@ -2,7 +2,9 @@
 
 Repository for all files associated with the R-Shiny app 'easyRpopgen"
 
-#### **Run easyRpopgen from Github**
+### **Run *easyRpopgen* using RStudio**
+
+To run *easyRpopgen* you will need to have a version of [RStudio](https://rstudio.com/products/rstudio/download/#download) and [R](https://cran.r-project.org/src/base/R-4/) on your computer. The app was developed using R v 4.02 and RStudio v 1.3.1093. Once you have RStudio set up, you simply need to copy the following script and run it in your console. It will check for the necessary R packages needed to run the computational core of the Shiny Application and download the ones it needs if they are not already present ("Environment Set-Up"). It will then download the Shiny app repository and open this with the *RunGitHub()* function.
 
 ```{r, eval = FALSE}
 
