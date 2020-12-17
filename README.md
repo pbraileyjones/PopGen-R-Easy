@@ -25,7 +25,7 @@ if (!require('devtools'))
 library(devtools)
 
 #CRAN packages
-packages_CRAN = c("dartR","dplyr", "adegenet", "shinyjs", "shinycssloaders", "poppr", "adegenet", "shinydashboard",
+packages_CRAN = c("xfun","plyr","dartR","dplyr", "adegenet", "shinyjs", "shinycssloaders", "poppr", "adegenet", "shinydashboard",
 "shiny", "viridis", "ade4", "dartR", "gdata", "DescTools", "pegas","matrixStats", "mmod", "genetics", "PopGenReport",
 "ggplot2", "ggExtra", "ggpubr", "data.table", "formattable", "shinyWidgets", "pophelper", "DT", "tidyr", "soc.ca",
 "hierfstat") #List of packages
