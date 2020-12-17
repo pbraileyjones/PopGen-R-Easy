@@ -75,9 +75,13 @@ The application is split in to five sections:
 
 ### **Data Input**
 
-### **Acknowlegments**
+hr()
 
-#### **App Creators and Contributors** 
+## **Acknowlegments**
+
+hr()
+
+### **App Creators and Contributors** 
 
 **Phil Brailey-Jones pbraileyjones@gmail.com (contact for any queries directly related to the application**
 
