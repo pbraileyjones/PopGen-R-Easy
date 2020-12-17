@@ -79,8 +79,6 @@ The application is split in to five sections:
 
 ## **Acknowlegments**
 
----
-
 ### **App Creators and Contributors** 
 
 **Phil Brailey-Jones pbraileyjones@gmail.com (contact for any queries directly related to the application**
@@ -93,6 +91,6 @@ Marjana Westergren marjana.westergren@gozdis.si
 
 Marko Bajc marko.bajc@gozdis.si
 
-**LifeGenMon Project Coordinator**
+###**LifeGenMon Project Coordinator**
 
 Hojka Kraigher hojka.kraigher@gozdis.si 
