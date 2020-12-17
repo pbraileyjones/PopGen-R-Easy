@@ -59,5 +59,16 @@ runGitHub("easyRpopgen", "pbraileyjones", refs = "main")
 
 ### **Application Overview**
 
+The application is split in to five sections:
+
+-Data Import
+
+-Data Filtering
+
+-Genetic Variation
+
+-Population Structure
+
+-Ordinations
 
 ### **Data Input**
