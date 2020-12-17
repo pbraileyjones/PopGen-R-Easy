@@ -1,4 +1,4 @@
-# ***easyRpopgen*: A population genetics *Shiny* app to generate publication quality figures, comprehensive summaries and analyses of genetic multiplicity, diversity and population structure using single nucleotide polymorphism and microsatellite data.**
+# ***easyRpopgen* v 1.0**
 
 ### **Introduction to *easyRpopgen***
 
