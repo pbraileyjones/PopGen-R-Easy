@@ -2,13 +2,35 @@ tabPanel ("Variance Partitioning (AMOVA)",
           
           fluidRow(
           
-          box(title="Perform AMOVA",
-              solidHeader = TRUE,
-              status="success",
+          tabBox(title="Analysis AMOVA",
               width = 12,
-              #includeMarkdown("https://github.com/pbraileyjones/easyRpopgen/blob/main/www/flavour_text/ft_AMOVA.Rmd"),
-              actionButton("AMOVAGOGO","Perform AMOVA")),
+              
+              tabPanel(title = "Perform AMOVA Analysis",
+              
+              fluidRow(column(width = 12,
+              
+              includeMarkdown("www/PopulationStructure/PopulationStructure_AMOVA_RMD.Rmd"),
+              )),
+              
+              fluidRow(column(width=12,
+              actionButton("AMOVAGOGO","Perform AMOVA")
+              ))
+              
           ),
+          
+          tabPanel(title = "Methods and Code",
+                   
+                   fluidRow(
+                     column(width = 12,
+                            includeMarkdown("www/PopulationStructure/PopulationStructure_AMOVA_Methods_RMD.Rmd"),
+                            
+                            )
+                   )
+                   
+                   )
+          
+          )
+              ),
           
           fluidRow(
             

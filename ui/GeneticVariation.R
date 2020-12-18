@@ -412,13 +412,27 @@
                                   tabPanel(title = "Population Level Calculation",
                                   
                                   fluidRow(
-                                  column(width = 6, 
+                                      
+                                      column(width = 2,
+                                             awesomeRadio(inputId = "LD_cc" , 
+                                                          label = "Perform clone correction" ,
+                                                          status = "success",
+                                                          choices = c("Yes" = "yes",
+                                                                      "No" = "no"))
+                                             ),
+                                  column(width = 2, 
                                   numericInput('LDpop_perm', 'Number of permutations', 
                                                value = 999, min = 0, max = NA, 
                                                step = 1, width = NULL),
-                                  br(),
-                                  actionButton("LDpopGO", "Calculate Linkage Disequilibrium"),
-                                  )),
+                                  ),
+                                  
+                                  column(width = 2,
+                                        
+                                         actionButton("LDpopGO", "Calculate Linkage Disequilibrium")
+                                  )
+                                  
+                                  
+                                  ),
                                   
                                   hr(),
                                   fluidRow(column(width = 12,

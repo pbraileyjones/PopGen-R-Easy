@@ -514,16 +514,19 @@ output$filterdf2 <- renderUI({
     
     br(),
     
-    h5("You can download the above table as a csv or Excel file and add the appropriate additions to format
-       it in the same manner as a GenAlEx file for future re-import in to the application
-       or other programs"),
+
+    fluidRow(column(width = 12,
+                    
+                    includeMarkdown("www/DataFilter/DataFilter_ExportInformation_RMD.Rmd")
+                    
+                    )),
     
-    h5("Alternatively, you can also download the STRUCTURE formatted file of the filtered data,
-       bare in STRUCTURE export converts your metadata to a numerical format which you will also
-       have to re-import"),
-    
-    #downloadButton("downloadgenealex_filt", "Download Filtered File (GenAlex)"),
-    downloadButton("downloadstructure_filt", "Download Filtered File (STRUCTURE)"),
+    fluidRow(column(width = 12,
+                    
+                    downloadButton("downloadstructure_filt", "Download Filtered File (STRUCTURE)"),
+                    
+                    
+                    )),
     
     br(),
     

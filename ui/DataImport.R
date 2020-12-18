@@ -19,7 +19,7 @@ navbarPage("Data Import",
                               ),
                      
                      fluidRow(
-                       box(title = "Import",
+                       box(title = "Import data",
                            status = "success",
                            solidHeader = TRUE,
                            
@@ -94,14 +94,57 @@ navbarPage("Data Import",
                                                                  choices = c("One" = "One",
                                                                              "Two" = "Two"
                                                                  ),
-                                                                 selected = "One"))
-                                   
-                                   
+                                                                 selected = "One"),
+                                                    
+                                                  
+                                                    radioButtons("strucmetaimport", "Import population metadata",
+                                                                 choices = c("Yes" = "yes",
+                                                                             "No" = "no"
+                                                                 ),
+                                                                 selected = "yes"),
+                                                    
+                                                    
+                                                    conditionalPanel("input.strucmetaimport == 'yes'",
+                                                                     
+                                                                     #Import metadata to match population parameters with individuals
+                                                                     
+                                                                     hr(),
+                                                                     
+                                                                     fileInput("file_strucmeta", h4("Import population metadata (OPTIONAL)"),
+                                                                               multiple = FALSE,
+                                                                               accept = c("text/csv",
+                                                                                          "text/comma-separated-values,text/plain",
+                                                                                          "csv")
+                                                                     ),
+                                                                     
+                                                                     fluidRow(
+                                                                       column(width = 12,
+                                                                              
+                                                                              includeMarkdown("www/DataImport/DataImport_StructureInfo_RMD.Rmd")
+                                                                              
+                                                                              
+                                                                       )
+                                                                       
+                                                                     )
+                                                                     
+                                                    ) #end of NESTED conditional
+                                                    
+                                                    
+                                                    
+                                                    ), #end of conditional
+                           
                                    
                                ),
-                               box(title = "Define data strata",
+                               box(title = "Define data strata (OPTIONAL)",
                                    status = "success",
                                    solidHeader = TRUE,
+                                   
+                                   fluidRow(column(width = 12,
+                                                   
+                                                   includeMarkdown("www/DataImport/DataImport_StrataDiff_RMD.Rmd")
+                                                   
+                                                   
+                                                   )), #end of fluidRow
                                   
                                    selectInput("stratdef", label = h5("Number of Strata to define"), 
                                                choices = list("One (The default 'pop' from the input file will be used)" = "One", "Two" = "Two", "Three" = "Three", "Four" = "Four", "Five" = "Five", "Six" = "Six"), 

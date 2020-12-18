@@ -2,11 +2,13 @@
 tabPanel("Admixture Analysis: Snapclust + DAPC",
 
 fluidRow(
-  box(title="Information",
+  box(title="Background",
       width= 12,
       solidHeader = TRUE,
       status = "success",
-      "Rmarkdown goes here xyz"
+      
+      includeMarkdown("www/PopulationStructure/PopulationStructure_SnapclustDAPC_RMD.Rmd")
+      
   ) #end of box
 ), #end of fluidrow
 

@@ -13,17 +13,18 @@
 #####################################
 
 #Calculate pairwise Fst values and bootstrap confidence intervals
-pwfst <- eventReactive(input$pwfstGO,{
+pwfst_tab <- eventReactive(input$pwfstGO,{
   
   genind<-genind_filt()
 
 #Calculate distances
-mat<-hierfstat::genet.dist(genind, diploid = TRUE, method = "WC84")
+mat<-genet.dist(genind, diploid = TRUE, method = "WC84")
 #Turn dist object in to a matrix object
 mat<-as.matrix(mat)
 
+
 #Bootstrap confidence intervals
-temp<-boot.ppfst(genind, nboot = 10000)
+temp<-boot.ppfst(genind, nboot = 999)
 #Add bootstrap intervals to the distance matrix
 upperTriangle(mat)<- paste(round(upperTriangle(temp$ll),5), "-", round(upperTriangle(temp$ul), 5))
 #Create data frame for DT visualization and download
@@ -33,7 +34,7 @@ as.data.frame(mat)
 }) #end of pwfst
 
 #Output data table of pairwise Fst values and confidence intervals
-output$pwfst <- renderDataTable(pwfst(), extensions = 'Buttons', 
+output$pwfst_tab <- renderDataTable(pwfst_tab(), extensions = 'Buttons', 
                                  options = list(dom = 'Bfrtip',
                                                 buttons = list('copy', list(extend='csv', filename = paste(input$projectID,"_PairwiseFSTComparisons")), list(extend='excel', filename= paste(input$projectID, "_PairwiseFSTComparisons")) )),
                                  caption = "Pairwise comparisons of pairwise Fst between populations. Pairwise Fst values are found in the lower triangle, and the upper and lower bounds of bootstrapped (10,000 permutations) confidence intervals are found in the upper triangle. Pairwise confidence intervals which overlap with zero are indicative that populations are statistically similar to one another",
@@ -41,31 +42,46 @@ output$pwfst <- renderDataTable(pwfst(), extensions = 'Buttons',
 )
 
 #Create dendogram / phylogenetic tree based on genetic distances
-pwfst.tree<-eventReactive(input$pwfstGO,{
+pwfst.tree<-reactive({
   
   
   genind<-genind_filt()
   
-  mat<-hierfstat::genet.dist(genind, diploid = TRUE, method = "Fst")
-  fst.tree<-nj(mat)
-  tip.label<-unique(genind$pop)
-  fst.tree$tip.label<-as.character(tip.label)
-  plot(fst.tree,
+  #Function from: https://gist.github.com/zkamvar/22ee313c7351cd03cd90b913bf3ad46a
+  fungen <- function(pop_column) {
+    force(pop_column)
+    function(x) {
+      dat <- cbind(pop_column, x)
+      res <- nj(genet.dist(dat, method = "WC84"))
+      res$tip.label <- levels(dat[[1]])
+      res
+    }
+  }
+  
+  n<-genind2hierfstat(genind)
+  genet.tree_pop <- fungen(n[1])
+  
+  phylo_tree <- genet.tree_pop(n[-1])
+  plot(phylo_tree,
        main = "Pairwise Fst",
-       sub = "Neighbour-joining tree of pairwise Fst values. \nThe scale of distances is given below the tree.")
+       sub = "Neighbour-joining tree of pairwise Fst values.\nThe scale of distances is given below the tree.")
   axisPhylo()
+  
   
 })
 
 #Render Fst dendogram / phylo tree
+
+
+observe({
 output$pwfts.tree<-renderPlot({
   
   req(pwfst.tree)
   
-  pwfst.tree<-pwfst.tree()
+  pwfst.tree()
   
 }, height = 400, width = 600)
-
+})
 
 ################################
 ####Other genetic distances#####

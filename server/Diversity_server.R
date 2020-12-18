@@ -165,18 +165,62 @@ LDOutput<-eventReactive(input$LDpopGO,{
   
   genind<-genind_filt()
   
-  link<-NULL;
-  for (i in unique(genind$pop)) {
-    temp<-poppr::popsub(genind, sublist = i, drop = TRUE)
-    x<-poppr::ia(temp, sample= as.numeric(input$LDpop_perm)) 
-    link<-rbind(link,x)
+  if (input$LD_cc == "yes") {
+    
+    pop<-as.data.frame(genind@pop)
+    genind@strata<-pop
+    colnames(genind@strata)<-"pop"
+    
+    genind2<-clonecorrect(genind)
+    
+    #Population Size 
+    N<-summary(genind)
+    N<-as.data.frame((N$n.by.pop))
+    N$pop<-rownames(N)
+    colnames(N)<-c("N", "pop")
+    N
+    #Population Size after clone correction
+    
+    N_cc<-summary(genind2)
+    N_cc<-as.data.frame((N_cc$n.by.pop))
+    N_cc$pop<-rownames(N)
+    colnames(N_cc)<-c("N_clonecorrected", "pop")
+    N
+    
+    
+    link<-NULL;
+    for (i in unique(genind$pop)) {
+      temp<-poppr::popsub(genind2, sublist = i, drop = TRUE)
+      x<-poppr::ia(temp, sample= as.numeric(input$LDpop_perm)) #input$LDpop_perm 
+      link<-rbind(link,x)
+    }
+    rownames(link)<-unique(genind$pop)
+    link<-round(link,3)
+    link
+    y<-rownames(link)
+    link<-cbind(y,link)
+    colnames(link)<-c("pop","Ia","p-value.Ia", "rbarD","p-value.rD")
+    link<-cbind(link, N[1], N_cc[1])
+    
   }
-  rownames(link)<-unique(genind$pop)
-  link<-round(link,3)
-  link
-  y<-rownames(link)
-  link<-cbind(y,link)
-  colnames(link)<-c("pop","Ia","p-value.Ia", "rbarD","p-value.rD")
+  
+  else if (input$LD_cc == "no") {
+    
+    link<-NULL;
+    for (i in unique(genind$pop)) {
+      temp<-poppr::popsub(genind2, sublist = i, drop = TRUE)
+      x<-poppr::ia(temp, sample= as.numeric(input$LDpop_perm)) #input$LDpop_perm 
+      link<-rbind(link,x)
+    }
+    rownames(link)<-unique(genind$pop)
+    link<-round(link,3)
+    link
+    y<-rownames(link)
+    link<-cbind(y,link)
+    colnames(link)<-c("pop","Ia","p-value.Ia", "rbarD","p-value.rD")
+    
+  }
+  
   link
   
 })

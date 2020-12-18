@@ -289,7 +289,7 @@ struccompoplot <- eventReactive (input$badscienceGO,{
   sublist
   
   colnames(sublist)<-c(q, "k", "Population", "IndID")
-  sublist<-select(sublist,-starts_with("unk"))
+  sublist<-select(sublist,starts_with("unk"))
   
   
   tidy<-tidyr::pivot_longer(sublist,cols= dplyr::starts_with("Cluster"), names_to = c("Cluster"))
@@ -397,7 +397,7 @@ struclistmeanpop <- eventReactive (input$badscienceGO,{
   
   
   colnames(sublist)<-c(q, "k", "Population")
-  sublist<-select(sublist,-starts_with("unk"))
+  #sublist<-select(sublist,starts_with("unk"))
   
   
   tidy<-tidyr::pivot_longer(sublist,cols= dplyr::starts_with("Cluster"), names_to = c("Cluster"))

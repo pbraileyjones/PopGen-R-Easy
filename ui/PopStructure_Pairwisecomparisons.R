@@ -33,7 +33,7 @@ tabPanel ("Population Comparisons (Fst etc.)",
                                      column(width = 12,
                                             
                                             div(style = 'overflow-x: scroll',
-                                                withSpinner(DT::dataTableOutput("pwfst"))
+                                                withSpinner(DT::dataTableOutput("pwfst_tab"))
                                             )
                                      )
                                    )
@@ -47,7 +47,7 @@ tabPanel ("Population Comparisons (Fst etc.)",
                                             
                                             div(style = 'overflow-x: scroll',
                                             withSpinner(
-                                              plotOutput("pwfst.tree", width = "100%")
+                                              plotOutput("pwfts.tree", width = "100%")
                                             ) #End 'withSpinner
                                             )
                                      ) #end of column

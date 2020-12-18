@@ -65,13 +65,13 @@ test<-reactive({
     
     else if (input$rowno == "Two") {
       genind<-adegenet::read.structure(input$file1$datapath,
-                             n.ind=input$indno,
-                             n.loc=input$locno,
-                             col.lab=1,
-                             col.pop=2,
-                             row.marknames=input$locno,
-                             onerowperind=FALSE,
-                             col.others=0)
+                                       n.ind=input$indno,
+                                       n.loc=input$locno,
+                                       col.lab=1,
+                                       col.pop=2,
+                                       row.marknames=input$locrow,
+                                       onerowperind=FALSE,
+                                       col.others=0)
       
       
     }
@@ -86,6 +86,12 @@ test<-reactive({
     
     
   }
+  
+  #Standardize strata section of all imported genind objects to match
+  pop<-as.data.frame(genind@pop)
+  genind@strata<-pop
+  colnames(genind@strata)<-"pop"
+  genind
   
   
   })
@@ -107,8 +113,6 @@ genindstrat<- reactive({
   
   testgenind<-test()
   
-  pop<-as.data.frame(testgenind@pop)
-  testgenind$strata<-pop
   
   if (input$stratdef == "One") {
     names(testgenind$strata)[1] <- "pop"
