@@ -1,0 +1,8 @@
+---
+title: "DataFilter_ExportInfo"
+output: html_document
+---
+
+You can download the above table as a .csv or .xlsx file and add the appropriate additions to format it as a GenAlEx file. When you come back to the application you can then re-import that file without carrying out filtering steps again. This also allows you to use the filtered data in other applications.
+   
+Alternatively, you can also download a STRUCTURE formatted file containing the filtered data. You can use this file for independent STRUCTURE analysis or again in other applications which can read STRUCTURE formatted data. If your data contained population levels coded as *characters* you will note when you download the STRUCTURE file that these have been converted to *numeric* values. We therefore recommend that you also download the population metadata file shown below in order to preserve your population assignments attached to the filtered data should you wish to use them when re-importing this data in to the application in the future, or to manually rename your population assignments per individual.

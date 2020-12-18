@@ -1,0 +1,10 @@
+---
+title: "PopulationStructure_AMOVA"
+output: html_document
+---
+
+AMOVA stands for **A**nalysis of **Mo**lecular **Va**riance. It is used to detect population differentiation when using molecular markers (Excoffier *et al* 1992, Michalakis & Excoffier, 1996).
+
+A comprehensive description of the history of the AMOVA framework and associated calculations is available in the article by Meirmans & Liu (2018), which is recommended reading prior to performing this analysis. Briefly, AMOVA is based on F statistics of genetic difference between populations, and uses the calculation of these statistics to partition variance into three levels- among haplotypes within individuals, among individuals within populations, and among populations within the metapopulation. The proportion of variance in the metapopulation across these three partitions is indicative of the underlying population structure (or lack thereof) found.
+
+**Statistical values to the AMOVA results by *PopGen-R-Easy*.** This is done via bootstrapping of sample matrices assuming a random distribution of strata membership, and the comparison of AMOVA results across the distribution to the observed AMOVA result with the known strata. This is incredibly computationally expensive and for many datasets can take over an hour if not longer to carry out. If you wish to add p-values, you can use the downloaded .csv file from this page and follow the instructions [here]( https://grunwaldlab.github.io/Population_Genetics_in_R/AMOVA.html). You can also run your analysis through the [Arlequin program](http://cmpg.unibe.ch/software/arlequin3/) developed by the group who originated that analytic technique.

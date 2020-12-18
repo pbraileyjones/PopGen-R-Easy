@@ -1,0 +1,51 @@
+---
+title: "GeneticVariation_Diversity_Methods"
+output: html_document
+---
+
+#### **Overview of *easyRpopgen* methodology**
+
+AMOVA is carried out using the *poppr* package (REF), and pie charts are visualized using ggplot2 (REF).
+
+Below is a simplified code displaying the logic behind the application calculations of each statistic and analysis conducted. Customization options (minus color palette changes) are kept in the code as 'input$XXX' to demonstrate which properties are altered through user input.
+
+```{r, eval = FALSE}
+
+##########################
+######AMOVA Analysis######
+##########################
+
+Amova <- poppr::poppr.amova(genind, hier=~pop, nperm=0, within=TRUE)
+  Amova  
+
+  perc <- Amova$componentsofcovariance[-4,]
+  temp<-rownames (perc)
+  perc<-cbind(temp, perc)
+  names(perc)=c("Comparison","Sigma", "Proportion")
+  perc
+  
+##########################
+######AMOVA Pie Chart#####
+##########################
+
+  perc<- perc %>% 
+    dplyr::arrange(dplyr::desc(Comparison)) %>%
+    mutate (prop= Proportion / sum (perc$Proportion) * 100 ) %>%
+    mutate (ypos = cumsum(prop) - 0.5 * prop)
+  
+  labelsize<-input$amova_perc
+  
+  plot<-ggplot(data = perc, aes(x = "", y = Proportion, fill = Comparison)) +
+    geom_bar(stat = "identity", width = 1, color = "white") +
+    coord_polar("y", start = 0) +
+    theme_void() +
+    labs(title = input$amova_titletext, fill = input$amova_legendtext) +
+    geom_text(aes(x =input$amova_percpos, y = ypos, label = paste(round(Proportion,2), "%")), size = labelsize, show_guide = FALSE)+
+    theme(legend.title = element_text(size = input$amova_legend),
+          legend.text = element_text(size = input$amova_legend),
+          title = element_text(size = input$amova_title),
+          legend.position = input$amova_legendposition
+          )
+  
+
+```

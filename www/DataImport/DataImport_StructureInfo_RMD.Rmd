@@ -1,0 +1,13 @@
+---
+title: "DataImport_StructureInfo"
+output: html_document
+---
+
+Importing population metadata for your STRUCTURE file is an entirely optional step associated with importing STRUCTURE data. All imported data **SHOULD** already have population assignments (See the 'Formatting data for Import' tab) which can be either numeric or character based.
+
+Through using the app you may have exported your data in the STRUCTURE format after filtering your data (In the 'Data Filtering' section), or in order to perform external STRUCTURE analysis (In the 'Population Structure- Admixture: STRUCTURE' section). You will have noted at the time that your population assignments were exported as *numeric* values. You will have also been directed to also export the matching population metadata containing your assignments in their original *character* assignments for each individual / genotype. The exported metadata file is pre-formatted for import here unless you have altered your exported STRUCTURE file **in any way** since export. Uploading your population metadata here will replace your *numeric* population assignments with the ***original*** assignments in whatever form they were in.
+
+If you did not save your population metadata at the time, or you are generally importing STRUCTURE data with population assignments that you would like to replace with different assignments, please consult the 'Formatting data for Import' to create a population metadata file that matches your data which can be uploaded here. **It is fundamental that the individual / genotype order in the STRUCTURE file and metadata file MATCH EXACTLY. If your STRUCTURE file has two rows per individual treat this as if it one row per individual when creating your metadata file.**
+
+If you like your population assignments being numeric then ignore this import step entirely 'Import population metadata = No'.
+

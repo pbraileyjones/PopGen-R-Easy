@@ -1,0 +1,8 @@
+---
+title: "DataImport_StructureInfo"
+output: html_document
+---
+
+If your population metadata is formatted with an underscore "_" between population levels / groupings (e.g. 'Factor1_Factor2_Factor3 etc.') then below you can choose to split these population assignments into their respective groupings and rename each population level. You will subsequently be able to summarize and analyze metrics of genetic variation by these levels individually, or by your overall population assignment.
+
+**This is entirely optional-** if you only have one level of population groupings then you do not need to do anything, likewise if you do not wish to split your population levels.

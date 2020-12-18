@@ -1,0 +1,8 @@
+---
+title: "PopulationStructure_Snapclust DAPC"
+output: html_document
+---
+
+Snapclust ([Beugin *et al* 2018](https://doi.org/10.1111/2041-210X.12968)) and Discriminant Analysis of Principal Components (DAPC, [Jombart *et al*, 2010](https://doi.org/10.1186/1471-2156-11-94)) provide an R-based alternative to STRUCTURE analysis to assess potential admixture across populations, with the same goal of determining the optimum number of population clusters in a dataset and assigning probabilities of membership to each individual. Both analyses are implemented through the *adegenet* package (REF). Snapclust as an approach utilizes a model similar to that implemented by STRUCTURE, but able to be conducted natively within R, and much faster ([Beugin *et al*, 2018](https://doi.org/10.1111/2041-210X.12968)). Due to this, in the application we focus on Snapclust as the technique through which population clusters and membership probability are assigned. These assignments are then used as *a priori* population assignments in DAPC to generate an ordination of individuals to visually explore population differentiation based on the snapclust assigned clusters.
+
+
