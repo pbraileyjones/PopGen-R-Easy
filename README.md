@@ -1,6 +1,6 @@
 # ***PopGen-R-Easy* v 1.0**
 
-### **Introduction to *easyRpopgen***
+### **Introduction to *PopGen-R-Easy***
 
 **Population Genetics is EASY with PopGen-R-Easy!!**
 
